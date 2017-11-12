@@ -109,6 +109,8 @@ Zestawienie wyników iloczynów skalarnych $x\cdot y$ (zadanie~5 z listy~1) oraz
 
 \subsection{Wnioski}
 
+Przeprowadzając analizę danych z tabeli (\ref{table:1}) można łatwo zauważyć, że w arytmetyce \texttt{Float32} zmiany dokonane w wektorze $x$ nie miały wpływu na wyniki (pozostały one takie same). Jest to spowodowane stosunkowo niewielką precyzją tej arytmetyki, a co za tym idzie pewną niedokładnością w przechowywaniu poszczególnych składowych wektora. Ta niedokładność okazała się tutaj na tyle duża, że usunięcie $9$ z $x_4$ nie zmieniło w żaden sposób zapisu wartości w arytmetyce \texttt{Float32}, a zmiana w $x_5$ zaważyła jedynie na najmniej znaczącym bicie zapisu liczby. Nie należy się zatem dziwić że wyniki nie uległy zmianie, jednak to powinno raczej martwić niż cieszyć, gdyż są one bardzo dalekie od poprawnych. Zgoła odmienna sytuacja miała miejsce w arytmetyce \texttt{Float64}. Tutaj wprowadzenie niewielkich zmian rzutowało bardzo mocno na wyniki obliczeń iloczynu skalarnego. Pierwszą rzeczą jaką można zauważyć jest to, że dane przy operacji obliczania iloczynu skalarnego są bardzo wrażliwe na zmiany. Mogłoby się wydawać że dokonanie modyfikacji rzędu $10^{-9}$ nie wpłynie znacząco na otrzymane wyniki, te jednak bardzo się zmieniły. Z drugiej strony, można zauważyć, że rozbieżności pomiędzy iloczynami skalarnymi uzyskanymi z użyciem poszczególnych algorytmów znacznie się zmniejszyły, a nawet powiedzieć że w granicach pewnego dopuszczalnego błędu są takie same, co pozwala z kolei wnioskować, że wynik iloczynu skalarnego w arytmetyce \texttt{Float64} przy zmienionych danych jest w gruncie rzeczy wynikiem poprawnym. Usunięcie ostatnich cyfr po przecinku z $x_4$ i $x_5$ sprawiło że wektory zostały dokładniej zapisane (zmniejszyła się także ich ortogonalność) i arytmetyka okazała się wystarczająca do obliczenia iloczynu skalarnego. Widać zatem wyraźnie, że precyzja arytmetyki odgrywa kluczową rolę wtedy, kiedy mamy do czynienia ze źle uwarunkowanym zadaniem, tj. wtedy kiedy niewielkie względne zmiany danych powodują duże względne odkształcenia wyników. Do rozwiązywania takich zadań należy zatem używać maksymalnej precyzji.
+
 \section{Nietypowa granica}
 
 \subsection{Opis problemu}
@@ -126,7 +128,7 @@ f(x) = e^x \ln(1 + e^{-x})
 Wykresy funkcji \eqref{eq:zad2} wykonano za pomocą biblioteki \emph{Plotly} (używając różnych typów zmiennopozycyjnych) w języku \emph{Julia}, a także za pomocą pakietu matematycznego \emph{Wolfram Alpha}. Granicę $\mathop {\lim }\limits_{x \to \infty}$ funkcji \eqref{eq:zad2} wyliczono za pomocą biblioteki \emph{SymPy} w języku \emph{Julia} oraz w sposób analityczny.  
 
 \subsection{Wyniki}
-Poniżej przedstawiono otrzymane wykresy funkcji \eqref{eq:zad2}. 
+Poniżej przedstawiono (\Cref{fig:zad2-plotly}, \Cref{fig:zad2-wa}) otrzymane wykresy funkcji \eqref{eq:zad2}. 
 
 \begin{figure}[h]
 \centering
@@ -151,6 +153,8 @@ Poniżej przedstawiono otrzymane wykresy funkcji \eqref{eq:zad2}.
 \end{equation}
 
 \subsection{Wnioski}
+
+Z analitycznego punktu widzenia oczywistym jest, że dla $x$ dążącego do nieskończoności granica funkcji \eqref{eq:zad2} jest równa jeden. Dużo trudniej natomiast podobnego wyniku dopatrzyć się na wykresach. Na każdym z nich pojawia się bowiem nietypowe zaburzenie, oscylacja niewłaściwa dla funkcji, po której wartości funkcji są równe zero. Na wykresach które przedstawia \Cref{fig:zad2-plotly}, można zaobserwować, że moment pojawienia się owej oscylacji zależny jest od precyzji arytmetyki. Obserwowane zaburzenia wywołane są poprzez dodanie bardzo małej wartości $e^{-x}$ do, w stosunku do niej dużej, jedynki przez co następuje utrata cyfr znaczących. Kluczowe jest jednak pomnożenie logarytmu tak przybliżonej wartości przez bardzo duże $e^{x}$, co potęguje względnie niewielki początkowy błąd i przez co można zaobserwować niepokojące zmiany na wykresie. Łatwo można wnioskować dalej że w momencie kiedy $1 + e^{-x} = 1$ ($e^{-x}$ zostaje całkowicie pochłonięte przez 1), to $\ln(1 + e^{-x}) = 0$, co tłumaczy pojawienie się wartości $0$ na wykresie. W wielu programach wykres funkcji w pewnym momencie się kończy. Wynika to z przepełnienia (\emph{overflow}) dla $e^x$, wtedy pojawia się mnożenie $\infty \times 0$ co przyjmuje wartość \textbf{NaN}. Na wykresie \ref{fig:zad2-wa2} w momencie wystąpienia \emph{overflow} zaobserwować można ,,oszustwo'' jakiego dokonuje program \emph{Wolfram Alpha} podstawiając po prostu wyliczoną analitycznie granicę równą jeden. W tym zadaniu przedstawiona jest sytuacja gdzie małe zmiany danych spowodowały duże odchylenia co pozwala stwierdzić że jest ono źle uwarunkowane.
 
 \section{Układ równań i wskaźnik uwarunkowania}
 
@@ -178,7 +182,7 @@ Macierz Hilberta $\mathbf{H}_n$ z rosnącym stopniem $n > 1$ wygenerowano za pom
 \subsection{Wyniki}
 Otrzymane wyniki dla macierzy Hilberta $\mathbf{H}_n$ prezentuje \Cref{table:2}, natomiast dla macierzy losowej $\mathbf{R}_n^c$ \Cref{table:3}, metoda eliminacji Gaussa jest oznaczona przez \texttt{GE}, a metoda macierzy odwrotnej przez \texttt{INV}.
 
-\begin{table}[h]
+\begin{table}[p]
         \centering
         \footnotesize
 \begin{tabular}{|c|c
@@ -233,7 +237,7 @@ Otrzymane wyniki dla macierzy Hilberta $\mathbf{H}_n$ prezentuje \Cref{table:2},
 \label{table:2}
 \end{table}	
 
-\begin{table}[h]
+\begin{table}[p]
         \centering
         \footnotesize
 \begin{tabular}{|c|c|l
@@ -282,6 +286,8 @@ Otrzymane wyniki dla macierzy Hilberta $\mathbf{H}_n$ prezentuje \Cref{table:2},
 
 \subsection{Wnioski}
 
+W problemie rozwiązywania układu równań liniowych decydujący wpływ na wielkość błędu względnego ma wskaźnik uwarunkowania macierzy. Obserwując wielkości błędów dla macierzy losowej $\mathbf{R}_n^c$ (\Cref{table:3}) zauważyć można że zgodnie z powyższym stwierdzeniem, że wielkości błędów zależą głównie od wskaźnika uwarunkowania (\textbf{cond}) i im większy wskaźnik uwarunkowania macierzy tym większy błąd względny. Problemy, w których pojawiają się macierze o dużym wskaźniku uwarunkowania, są źle uwarunkowane. Wyjątkowo kłopotliwe są zadania które sprowadzają się do obliczeń z macierzą Hilberta, ponieważ macierz ta jest bardzo źle uwarunkowana, co można zauważyć analizując otrzymane wartości ,,\textbf{cond}'', które przedstawia \Cref{table:2}. Wraz ze wzrostem rozmiaru macierzy rośnie wskaźnik uwarunkowania macierzy Hilberta. Można więc sobie wyobrazić, że zadanie w którym pojawia się taka macierz o dużym rozmiarze może być bardzo ciężko poprawnie rozwiązać. Z danych w tabeli można również wnioskować, że lepszym algorytmem w przypadku macierzy Hilberta jest eliminacja Gaussa (metoda macierzy odwrotnej nie jest zalecana z numerycznego punktu widzenia).
+
 \section{,,Złośliwy wielomian'' Wilkinsona}
 
 \subsection{Opis problemu}
@@ -296,7 +302,7 @@ Do rozwiązania zadania użyto pakietu \texttt{Polynomials}. Miejsca zerowe wiel
 
 \Cref{table:4} przedstawia obliczone pierwiastki wielomianu $P$ oraz $|P(z_k)|$, $|p(z_k)|$ i $|z_k-k|$, natomiast \Cref{table:5} prezentuje te wartości dla wielomianu $P$ z zaburzonym współczynnikiem.
 
-\begin{table}[h]
+\begin{table}[!h]
         \centering
         \footnotesize
 \begin{tabular}{c
@@ -320,33 +326,33 @@ Do rozwiązania zadania użyto pakietu \texttt{Polynomials}. Miejsca zerowe wiel
 		]}
 %\toprule
 {$k$} & {$|P(z_k)|$} & {$|p(z_k)|$} & {$|z_k-k|$} \\ \hline
-1 & 2.746295274547e+13 & 2.746278890701e+13 & 1.907087633626e-04 \\
-2 & 1.027837616282e+13 & 1.027823565670e+13 & 1.909818299438e-03 \\
-3 & 7.199554861056e+12 & 7.199447475200e+12 & 9.078647283520e-03 \\
-4 & 3.777623778304e+12 & 3.777532946944e+12 & 2.542714623741e-02 \\
-5 & 1.555027751936e+12 & 1.554961097216e+12 & 5.371328339203e-02 \\
-6 & 6.139877534720e+11 & 6.139384156160e+11 & 7.549379969948e-02 \\
-7 & 3.653832509440e+11 & 3.653447936000e+11 & 8.524440819787e-02 \\
-8 & 2.157236290560e+11 & 2.156963307520e+11 & 7.431403244734e-02 \\
-9 & 7.216771584000e+10 & 7.214665062400e+10 & 4.671674615314e-02 \\
-10 & 3.575989555200e+10 & 3.574346905600e+10 & 2.502293290932e-02 \\
-11 & 1.270712678400e+10 & 1.269690726400e+10 & 9.586957518275e-03 \\
-12 & 4.465326592000e+09 & 4.457859584000e+09 & 2.915294362053e-03 \\
-13 & 1.682691072000e+09 & 1.678497280000e+09 & 6.441703922384e-04 \\
-14 & 4.803983360000e+08 & 4.782909440000e+08 & 1.020027930076e-04 \\
-15 & 1.201520640000e+08 & 1.188249600000e+08 & 1.075417522678e-05 \\
-16 & 2.411468800000e+07 & 2.334668800000e+07 & 6.657697912971e-07 \\
-17 & 3.106816000000e+06 & 2.844672000000e+06 & 1.626246826092e-08 \\
-18 & 2.094080000000e+05 & 3.015680000000e+05 & 4.079034887638e-10 \\
-19 & 1.817600000000e+05 & 1.981440000000e+05 & 2.831823664451e-11 \\
-20 & 3.635200000000e+04 & 3.840000000000e+04 & 3.010924842783e-13 \\
+1&3.635200000000e+04&3.840000000000e+04&3.010924842783e-13 \\
+2&1.817600000000e+05&1.981440000000e+05&2.831823664451e-11 \\
+3&2.094080000000e+05&3.015680000000e+05&4.079034887638e-10 \\
+4&3.106816000000e+06&2.844672000000e+06&1.626246826092e-08 \\
+5&2.411468800000e+07&2.334668800000e+07&6.657697912971e-07 \\
+6&1.201520640000e+08&1.188249600000e+08&1.075417522678e-05 \\
+7&4.803983360000e+08&4.782909440000e+08&1.020027930076e-04 \\
+8&1.682691072000e+09&1.678497280000e+09&6.441703922384e-04 \\
+9&4.465326592000e+09&4.457859584000e+09&2.915294362053e-03 \\
+10&1.270712678400e+10&1.269690726400e+10&9.586957518275e-03 \\
+11&3.575989555200e+10&3.574346905600e+10&2.502293290932e-02 \\
+12&7.216771584000e+10&7.214665062400e+10&4.671674615314e-02 \\
+13&2.157236290560e+11&2.156963307520e+11&7.431403244734e-02 \\
+14&3.653832509440e+11&3.653447936000e+11&8.524440819787e-02 \\
+15&6.139877534720e+11&6.139384156160e+11&7.549379969948e-02 \\
+16&1.555027751936e+12&1.554961097216e+12&5.371328339203e-02 \\
+17&3.777623778304e+12&3.777532946944e+12&2.542714623741e-02 \\
+18&7.199554861056e+12&7.199447475200e+12&9.078647283520e-03 \\
+19&1.027837616282e+13&1.027823565670e+13&1.909818299438e-03 \\
+20&2.746295274547e+13&2.746278890701e+13&1.907087633626e-04 \\
 %\bottomrule
 \end{tabular}
 \caption{Obliczone wartości dla wielomianu $P$}
 \label{table:4}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[!h]
         \centering
         \scriptsize
 \begin{tabular}{c|c
@@ -370,26 +376,26 @@ Do rozwiązania zadania użyto pakietu \texttt{Polynomials}. Miejsca zerowe wiel
 		]}
 %\toprule
 {$k$} & {$z_k$} & {$|P(z_k)|$} & {$|p(z_k)|$} & {$|z_k-k|$} \\ \hline
-1&20.846910215194789&1.114453504512e+13&1.374373319725e+18&8.469102151948e-01 \\
-2&19.502442368818102 + 1.940331978642903i&9.539424609818e+12&4.252502487993e+17&2.004329444310e+00 \\
-3&19.502442368818102 - 1.940331978642903i&9.539424609818e+12&4.252502487993e+17&2.454021446313e+00 \\
-4&16.730744879792670 + 2.812624896721978i&3.315103475982e+11&2.742089401676e+16&2.825483521350e+00 \\
-5&16.730744879792670 - 2.812624896721978i&3.315103475982e+11&2.742089401676e+16&2.906001873538e+00 \\
-6&13.992406684487216 + 2.518824425710844i&1.061206453308e+11&9.545941595184e+14&2.712880531285e+00 \\
-7&13.992406684487216 - 2.518824425710844i&1.061206453308e+11&9.545941595184e+14&2.518835871191e+00 \\
-8&11.793890586174369 + 1.652477136407579i&3.357756113172e+10&3.296021414130e+13&2.045820276678e+00 \\
-9&11.793890586174369 - 1.652477136407579i&3.357756113172e+10&3.296021414130e+13&1.665281290598e+00 \\
-10&10.095455630535774 + 0.644932823624069i&7.143113638036e+09&1.491263381675e+12&1.110918027272e+00 \\
-11&10.095455630535774 - 0.644932823624069i&7.143113638036e+09&1.491263381675e+12&6.519586830380e-01 \\
-12&8.915816367932559&3.065575424000e+09&1.371743170560e+11&8.418363206744e-02 \\
-13&8.007772029099446&1.072547328000e+09&1.852548659200e+10&7.772029099446e-03 \\
-14&6.999602070422420&3.881231360000e+08&1.757670912000e+09&3.979295775798e-04 \\
-15&6.000020476673031&1.291484160000e+08&2.061204480000e+08&2.047667303096e-05 \\
-16&4.999998573887910&3.946393600000e+07&4.330393600000e+07&1.426112089753e-06 \\
-17&4.000000089724362&1.046784000000e+07&1.072998400000e+07&8.972436216226e-08 \\
-18&2.999999996603420&2.221568000000e+06&2.295296000000e+06&3.396579906223e-09 \\
-19&2.000000000055037&3.491840000000e+05&3.655680000000e+05&5.503730804435e-11 \\
-20&0.999999999999836&2.099200000000e+04&2.201600000000e+04&1.643130076445e-13 \\
+1&0.999999999999836&2.099200000000e+4&2.201600000000e+4&1.643130076445e-13 \\
+2&2.000000000055037&3.491840000000e+5&3.655680000000e+5&5.503730804435e-11 \\
+3&2.999999996603420&2.221568000000e+6&2.295296000000e+6&3.396579906223e-09 \\
+4&4.000000089724362&1.046784000000e+7&1.072998400000e+7&8.972436216226e-08 \\
+5&4.999998573887910&3.946393600000e+7&4.330393600000e+7&1.426112089753e-06 \\
+6&6.000020476673031&1.291484160000e+8&2.061204480000e+8&2.047667303096e-05 \\
+7&6.999602070422420&3.881231360000e+8&1.757670912000e+9&3.979295775798e-04 \\
+8&8.007772029099446&1.072547328000e+9&1.852548659200e+10&7.772029099446e-03 \\
+9&8.915816367932559&3.065575424000e+9&1.371743170560e+11&8.418363206744e-02 \\
+10&10.095455630535774 - 0.644932823624069i&7.143113638036e+09&1.491263381675e+12&6.519586830380e-01 \\
+11&10.095455630535774 + 0.644932823624069i&7.143113638036e+09&1.491263381675e+12&1.110918027272e+00 \\
+12&11.793890586174369 - 1.652477136407579i&3.357756113172e+10&3.296021414130e+13&1.665281290598e+00 \\
+13&11.793890586174369 + 1.652477136407579i&3.357756113172e+10&3.296021414130e+13&2.045820276678e+00 \\
+14&13.992406684487216 - 2.518824425710844i&1.061206453308e+11&9.545941595184e+14&2.518835871191e+00 \\
+15&13.992406684487216 + 2.518824425710844i&1.061206453308e+11&9.545941595184e+14&2.712880531285e+00 \\
+16&16.730744879792670 - 2.812624896721978i&3.315103475982e+11&2.742089401676e+16&2.906001873538e+00 \\
+17&16.730744879792670 + 2.812624896721978i&3.315103475982e+11&2.742089401676e+16&2.825483521350e+00 \\
+18&19.502442368818102 - 1.940331978642903i&9.539424609818e+12&4.252502487993e+17&2.454021446313e+00 \\
+19&19.502442368818102 + 1.940331978642903i&9.539424609818e+12&4.252502487993e+17&2.004329444310e+00 \\
+20&20.846910215194789&1.114453504512e+13&1.374373319725e+18&8.469102151948e-01 \\
 %\bottomrule
 \end{tabular}
 \caption{Obliczone wartości dla wielomianu $P$ z zaburzonym współczynnikiem przy $x^{19}$}
@@ -397,6 +403,8 @@ Do rozwiązania zadania użyto pakietu \texttt{Polynomials}. Miejsca zerowe wiel
 \end{table}
 
 \subsection{Wnioski}
+
+W uproszczeniu można powiedzieć że zadanie polegało na policzeniu dwudziestu pierwiastków a następnie wykonaniu klasycznego ,,sprawdzenia'' obliczając wartości funkcji w otrzymanych zerach. \Cref{table:4} pokazuje jednak że ta kontrola wyników się nie powiodła. Można by powiedzieć że pierwiastki wcale nie są źle obliczone, z otrzymanych danych wynika przecież, że odchylenia były niewielkie. Można by powiedzieć że odchylenie rzędu $10^{-13}$ jest bardzo niewielkie i zignorować taki błąd. Jednak przy zagadnieniu wielomianu Wilkinsona takie drobne odchylenie pierwiastka powoduje że zamiast oczekiwanego zera pojawia się około $20 000$, dla nieco większych odchyleń błędy rosną lawinowo i sięgają nawet bilionów. Dzieje się tak ponieważ w tym konkretnym wielomianie drobny błąd w wartości pierwiastka mnożony jest przez czynnik rzędu $19!$. Wpływ na błędy przy obliczeniach miejsc zerowych mają współczynniki wielomianu $P$, które nie są dokładnie reprezentowane w arytmetyce \texttt{Float64}. Widać to wyraźniej w próbie powtórzenia eksperymentu Wilkinsona, gdzie celowo został zaburzony jeden ze współczynników. \Cref{table:5} prezentuje dane dla tego eksperymentu. Można zauważyć, że w wielomianie, który ma miejsca zerowe rzeczywiste pojawiają się pierwiastki zespolone. Ze względu na tak duże odkształcenia wyników wynikłe z zaburzenia współczynników przy niewielkich zmianach danych można mówić o tym, że zadanie to jest źle uwarunkowane.
 
 \section{Model wzrostu populacji}
 
@@ -417,7 +425,7 @@ W tym celu należało przeprowadzić następujące eksperymenty.
 
 \subsection{Rozwiązanie}
 
-Zaimplementowano podany model wzrostu populacji i za pomocą stworzonej funkcji obliczono wyniki dla odpowiedniej liczby iteracji.
+Zaimplementowano podany model wzrostu populacji \eqref{eq:zad5} i za pomocą stworzonej funkcji obliczono wyniki dla odpowiedniej liczby iteracji.
 
 \subsection{Wyniki}
 
@@ -513,6 +521,8 @@ Iteracja & {Float32} & {Float64} \\ \hline
 
 \subsection{Wnioski}
 
+Przeprowadzone w zadaniu eksperymenty są przykładami sprzężenia zwrotnego, czyli procesu, w którym dane wyjściowe jednego problemu są wejściem kolejnych obliczeń. Można zatem podejrzewać, że jeżeli w pierwszym eksperymencie wynik w dziesiątej iteracji jest zgodny tylko do trzeciego miejsca po przecinku, to w dalszych iteracjach też będzie istniała różnica między wynikami. Dziwić może jednak, że wyniki wyższych iteracji wydają się zupełnie nieskorelowane. Wskazuje to na istnienie pewnego chaosu w systemie, czy też, mówiąc inaczej niemożności przewidywania (sformułowanie Lorenza). Można jednak powiedzieć, że w pierwszym eksperymencie wprowadzony błąd był zbyt duży i postawić tezę, że jeżeli błąd ten zostanie zmniejszony, to dziwne zachowanie iteracji zniknie. W tym celu przeprowadzono drugi eksperyment. Dane nie zostały w żaden sposób zaburzone, jednak do wykonywania obliczeń zostały zastosowane różne precyzje. Również tutaj widać jednak, że małe odchylenie pojawiające się w pewnym momencie jest w dalszym etapie potęgowane i znów powoduje to nieskorelowanie wyników dla późniejszych iteracji. Mogłoby się wydawać że bardziej wiarygodne są obliczenia wykonane w arytmetyce \texttt{Float64}, jednak nie jest to do końca prawdziwy wniosek, gdyż jej precyzja jest ograniczona. Można zauważyć, że w każdej kolejnej iteracji rośnie liczba cyfr znaczących pozwalających na dokładne zapisanie wyniku. W pewnym momencie zatem precyzja arytmetyki \texttt{Float64} staje się niewystarczająca. Widać zatem, że niezależnie od tego, jak małe odchylenie od wartości początkowych zostanie wybrane, na skutek przeniesienia błędu jako wejście do kolejnej iteracji, a potem następnej, itd., będzie on gwałtownie rósł, tak że po stosunkowo niewielu iteracjach przewidywanie za pomocą komputera stanie się bezwartościowe. Zaobserwowana tutaj numeryczna niestabilność jest ciężka do uniknięcia, ponieważ nie istnieje arytmetyka o nieskończonej precyzji, która byłaby w stanie wykonać wszystkie obliczenia poprawnie, można jedynie przez wybór odpowiednio dużej precyzji opóźnić zjawisko niemożności przewidywania.
+
 \section{Iterowanie funkcji kwadratowej}
 
 \subsection{Opis problemu}
@@ -536,7 +546,11 @@ W tym celu należało wykonać 40 iteracji wyrażenia \eqref{eq:zad6} i zaobserw
 
 \subsection{Rozwiązanie}
 
+Zaimplementowano wyrażenie \eqref{eq:zad6} i za pomocą stworzonej w programie funkcji dla danych parametrów wejściowych $x_0$ i $c$ wykonano zadaną liczbę iteracji.
+
 \subsection{Wyniki}
+
+Wyniki kolejnych iteracji wyrażenia \eqref{eq:zad6} dla różnych danych wejściowych przedstawia \Cref{table:8}.
 
 \begin{table}[h]
         \centering
@@ -629,12 +643,34 @@ W tym celu należało wykonać 40 iteracji wyrażenia \eqref{eq:zad6} i zaobserw
 40&-1.0&2.0&-0.3289791230026702&-1.0&-1.0&-1.0&0.0 \\
 %\bottomrule
 \end{tabular}
-\caption{Wybrane wyniki kolejnych iteracji modelu logistycznego w arytmetyce \texttt{Float32} i \texttt{Float64}}
+\caption{Kolejne iteracje funkcji $x_{n+1}=x_n^2 + c$ dla danych $x_0$ i $c$}
 \label{table:8}
 \end{table}
 
+\noindent W celu lepszego przedstawienia wyników metodą iteracji graficznej zostały stworzone wykresy, które przedstawia \Cref{fig:zad6}.
+
+\begin{figure}[h]
+\centering
+\subfloat[$x_{n+1}=x_n^2 - 2$\label{fig:zad6-1}]{\includegraphics[width=0.5\textwidth]{zad61}}\hfill
+\subfloat[$x_{n+1}=x_n^2 - 1$\label{fig:zad6-6}] {\includegraphics[width=0.5\textwidth]{zad62}}\hfill
+\subfloat[$x_0 = 1, c = -2$\label{fig:zad6-11}]{\includegraphics[width=0.5\textwidth]{zad611}}\hfill
+\subfloat[$x_0 = 1, c = -1$\label{fig:zad6-21}]{\includegraphics[width=0.5\textwidth]{zad621}}\hfill
+\caption{Iteracje graficzne wyrażenia $x_{n+1}=x_n^2 + c$ dla wybranych $x_0$ i $c$}
+\label{fig:zad6}
+\end{figure}
+\begin{figure}[h]\ContinuedFloat
+\centering
+\subfloat[$x_0 = 0.25, c = -1$\label{fig:zad6-225}]{\includegraphics[width=0.5\textwidth]{zad6225}}\hfill
+\subfloat[$x_0 = 0.75, c = -1$\label{fig:zad6-275}]{\includegraphics[width=0.5\textwidth]{zad6275}}\hfill
+\subfloat[$x_0 = 1.99999999999999, c = -2$ -- 40 iteracji\label{fig:zad6-191}]{\includegraphics[width=0.5\textwidth]{zad6191}}\hfill
+\subfloat[$x_0 = 1.99999999999999, c = -2$ -- 100 iteracji\label{fig:zad6-192}]{\includegraphics[width=0.5\textwidth]{zad6192}}\hfill
+\subfloat[$x_0 = 1.99999999999999, c = -2$ -- 200 iteracji\label{fig:zad6-193}]{\includegraphics[width=0.5\textwidth]{zad6193}}\hfill
+\caption{Iteracje graficzne wyrażenia $x_{n+1}=x_n^2 + c$ dla wybranych $x_0$ i $c$} 
+\end{figure}
+
 \subsection{Wnioski}
 
+Analizując zadanie poprzednie (model wzrostu populacji) można wyciągnąć wnioski, że za niestabilność numeryczną odpowiedzialna jest tylko i wyłącznie operacja podnoszenia do kwadratu. Iteracje wykonane w tym zadaniu obalają jednak ten wniosek. W tabeli \ref{table:8} widać, że dla $x_0 = 1$ lub $x_0 = 2$ przy $c = -2$ iteracja zachowuje się stabilnie. W przypadku, gdy $x_0 = 1.99999999999999$ (jest to niewielkie odchylenie od $2$) widać natomiast odmienne zachowanie, w którym występuje niestabilność. Doskonale obrazuje to metoda iteracji graficznej pokazana na wykresach \ref{fig:zad6-191}, \ref{fig:zad6-192}, \ref{fig:zad6-193}. Można zatem wyciągnąć wnioski, że niektóre z danych początkowych prowadzą do stabilnego zachowania, inne generują niestabilność wyników. W rzeczywistości w przedziale $[-2, 2]$ nie znajduje się zbyt wiele wartości prowadzących do rozwiązań stabilnych. Funkcja $\phi(x) = x^2 - 2$ posiada dwa punkty stałe (tzn. takie $x$ dla których $\phi(x) = x$) -- $-1$, $2$, co pokazuje wykres \ref{fig:zad6-1}. Wartości początkowe dla których $\phi(x)$ jest zbieżna do tych punktów prowadzą do stabilnych rozwiązań. Eksperymentalne sprawdzenie za pomocą iteracji graficznej pokazało jednak że w dużej mierze $\phi(x)$ jest rozbieżna. Zbieżność została zaobserwowana dla pojedynczych wartości $x_0$ takich jak: $-2, -1, 0, 1, 2$. Obserwacje te pokazują, że analiza błędu nie jest łatwa do przeprowadzenia, co staje się jeszcze bardziej widoczne kiedy wartość $c = -2$ została zamieniona na $c = -1$. Dla tak zdefiniowanej funkcji $\phi(x)$ otrzymano punkty stałe $\dfrac{1-\sqrt{5}}{2}$ i $\dfrac{1+\sqrt{5}}{2}$. Zaobserwować można jednak inną ciekawą rzecz. Startując od $x_0$ równego $1, -1, 0.75$ czy $0.25$ po pewnej liczbie iteracji proces ustala się i powtarzają się tylko dwie wartości: $0$ i $-1$. Do takiego efektu doprowadza również wybranie wielu innych wartości początkowych. Dla takich wartości $x_0$ układ sprzężenia zwrotnego jest w stanie idealnie stabilnym, co obrazują wykresy \ref{fig:zad6-21}, \ref{fig:zad6-275} i \ref{fig:zad6-225}. Dla tak przewidywalnych procesów niewielkie błędy podczas przebiegu zanikają lub ulegają redukcji, mogą więc zostać pominięte. Można posłużyć się zatem arytmetyką o skończonej precyzji, która staje się narzędziem jak najbardziej zdatnym do analizy i nie może zawieść.
 
 %\begin{algorithm}[h]
 %\caption{Wyznaczanie epsilonów maszynowych.}
