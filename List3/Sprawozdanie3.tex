@@ -65,7 +65,7 @@ $u \leftarrow f(a)$\;
 $v \leftarrow f(b)$\;
 $e \leftarrow b - a$\;
 $it \leftarrow 0$\;
-\If {$sign(u) = sign(v)$}{
+\If {\texttt{sign}$(u) = $\texttt{sign}$(v)$}{
 	\Return $err$ $1$\;
 }
 \While {$e > epsilon$}{
@@ -73,10 +73,10 @@ $it \leftarrow 0$\;
 	$e \leftarrow e / 2$\;
 	$c \leftarrow a + e$\;
 	$w \leftarrow f(c)$\;
-	\If {$|e| < delta$ OR $|w| < epsilon$}{
+	\If {$|e| < delta$ \textbf{or} $|w| < epsilon$}{
 		\Return $c, w, it, 0$\;
 	}
-	\If {$sign(w) \neq sign(u)$}{
+	\If {\texttt{sign}$(w) \neq $\texttt{sign}$(u)$}{
 		$b \leftarrow c$\;
 		$v \leftarrow w$\;
 	}
@@ -114,11 +114,10 @@ $it \leftarrow 0$\;
 \section{Metoda Newtona}
 
 \subsection{Opis problemu}
-Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą Newtona.
-
+Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą Newtona. Metoda Newtona (stycznych) znajdująca zera funkcji opiera się na \emph{linearyzacji funkcji}, tj. zastąpieniu $f$ funkcją liniową. Jest nią suma dwóch początkowych składników we wzorze Taylora dla $f$. Zazwyczaj metoda Newtona jest szybsza od metod bisekcji i siecznych, gdyż jest zbieżność jest kwadratowa. W momencie gdy przybliżenia tworzone metodą Newtona są dostatecznie bliskie pierwiastka, staje się ona tak szybko zbieżna, że kilka przybliżeń pozwala osiągnąć maksymalną dokładność. Wadą tej metody jest jednak to, że nie zawsze jest zbieżna, dlatego często stosuje się ją w kombinacji z jakąś wolniejszą metodą, która jest już zbieżna globalnie. Inną wadą może być również konieczność liczenia pochodnej funkcji.
 \subsection{Rozwiązanie}
-
-\begin{algorithm}[h]
+Działanie metody Newtona przedstawia \Cref{alg:new}.
+\begin{algorithm}[!h]
 \caption{Metoda Newtona}
 \label{alg:new}
 \DontPrintSemicolon
@@ -138,15 +137,14 @@ $v \leftarrow f(x_0)$\;
 \For {$it \leftarrow 1$ \KwTo $maxit$}{
 	$x_1 \leftarrow x_0 - (v/p_f(x_0))$\;
 	$v \leftarrow f(x_1)$\;
-	\If {$|x_1 - x_0| < delta$ OR $|v| < epsilon$}{
+	\If {$|x_1 - x_0| < delta$ \textbf{or} $|v| < epsilon$}{
 		\Return $x_1, v, it, 0$\;
 	}
 	$x_0 \leftarrow x_1$\;
 }
 \Return $err$ $1$\;
 }
-\end{algorithm}
-
+\end{algorithm} 
 \begin{longtable}[l]{r  c  l}
 %\begin{table}[!h]
 %\centering
@@ -169,6 +167,8 @@ $v \leftarrow f(x_0)$\;
 %\end{tabular}
 \end{longtable}
 
+\noindent Na początku działania algorytmu sprawdzane są warunki natychmiastowego zakończenia, gdy wartość funkcji dla przybliżenia początkowego jest dostatecznie bliska zeru - zwracany jest wynik oraz kiedy pochodna jest bliska zeru - niemożliwe jest wtedy zastosowanie metody. Następnie dla zadanej maksymalnej liczby iteracji wyznaczane są kolejne przybliżenia zera funkcji, które są dane rekurencyjnym wzorem $x_{n+1} := x_n - \dfrac{f(x_n)}{f'(x_n)}$ wynikającym bezpośrednio z definicji metody. Obliczenia są kończone kiedy znalezione zero mieści się w dokładności, bądź też odległość kolejnych przybliżeń jest dostatecznie mała. W przypadku nieotrzymania wyniku w zadanej liczbie iteracji zwracany jest błąd.
+
 
 \section{Metoda siecznych}
 
@@ -176,6 +176,9 @@ $v \leftarrow f(x_0)$\;
 Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą siecznych.
 
 \subsection{Rozwiązanie}
+
+Działanie metody siecznych przedstawia \Cref{alg:sie}.
+
 \begin{algorithm}[h]
 \caption{Metoda siecznych}
 \label{alg:sie}
@@ -196,7 +199,7 @@ $f_{x_1} \leftarrow f(x_1)$\;
 	$f_{x_1} \leftarrow f_{x_0}$\;
 	$x_0 \leftarrow x_0 - (f_{x_0} \times s)$\;
 	$f_{x_0} \leftarrow f(x_0)$\;
-	\If {$|x_1 - x_0| < delta$ OR $|f_{x_0}| < epsilon$}{
+	\If {$|x_1 - x_0| < delta$ \textbf{or} $|f_{x_0}| < epsilon$}{
 		\Return $x_0, f_{x_0}, it, 0$\;
 	}
 }
@@ -338,7 +341,7 @@ Podczas analizy równania funkcji $f_1$ i $f_2$ niemal natychmiast nasuwają si�
 		table-figures-decimal = 15,
 		table-figures-exponent = 3
 		]|c}
-Przedział& {$x_0$} & {$f(x_0)$} & Liczba iteracji \\ \hline
+Przedział& {$r$} & {$f(r)$} & Liczba iteracji \\ \hline
 \multicolumn{4}{c}{$f_1$} \\ \hline
 $[0.0,1.5]$&1.0000076293945312&-7.6293654275305656e-6&16 \\
 $[0.5,3.0]$&0.9999923706054688&7.629423635080457e-6&16 \\
@@ -372,7 +375,7 @@ $[-5.0,1000.0]$&497.5&4.318056675122884e-214&1 \\
 		table-figures-decimal = 16,
 		table-figures-exponent = 3
 		]|c|c}
-Przedział& {$x_0$} & {$f(x_0)$} & Liczba iteracji & Błąd \\ \hline
+$x_0$& {$r$} & {$f(r)$} & Liczba iteracji & Błąd \\ \hline
 \multicolumn{5}{c}{$f_1$} \\ \hline
 -1.0&0.9999922654776594&7.734552252003368e-6&5&0 \\
 0.0&0.9999984358892101&1.5641120130194253e-6&4&0 \\
@@ -395,6 +398,41 @@ Przedział& {$x_0$} & {$f(x_0)$} & Liczba iteracji & Błąd \\ \hline
 \end{tabular}
 \caption{Miejsca zerowe $f_1$ i $f_2$ obliczone za pomocą metody stycznych.}
 \label{table:4}
+\end{table}
+
+\begin{table}[h]
+        \centering
+        \footnotesize
+\begin{tabular}{c|c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 3,
+		table-figures-decimal = 16,
+		table-figures-exponent = 2
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 16,
+		table-figures-exponent = 3
+		]|c|c}
+$x_0$&$x_1$& {$r$} & {$f(r)$} & Liczba iteracji & Błąd \\ \hline
+\multicolumn{5}{c}{$f_1$} \\ \hline
+-1.0&2.0&1.0000009310146594&-9.310142259355558e-7&7&0 \\
+0.5&3.0&0.9999998801054126&1.1989459447470097e-7&6&0 \\
+-3.0&4.0&0.9999924734799833&7.526548341019179e-6&1500&0 \\
+-2.0&6.0&5.229263398675002&-0.9854368861925255&5&0 \\
+10.0&100.0&{---}&{---}&{---}&1 \\ \hline
+\multicolumn{5}{c}{$f_2$} \\ \hline
+-1.0&0.5&3.201418966654486e-7&3.2014179417463104e-7&7&0 \\
+-0.25&1.5&5.662892187393383e-7&5.662888980559498e-7&7&0 \\
+2.0&6.0&14.386737398698989&8.12609044213971e-6&12&0 \\
+10.0&20.0&20.00090808104888&4.118752554492817e-8&1&0 \\
+-2.0&100.0&100.0&3.7200759760208363e-42&1&0 \\
+
+\end{tabular}
+\caption{Miejsca zerowe $f_1$ i $f_2$ obliczone za pomocą metody siecznych.}
+\label{table:5}
 \end{table}
 
 \subsection{Wnioski}
