@@ -1,0 +1,334 @@
+\documentclass[11pt]{mk-polish-lab-report}
+
+\usepackage{lipsum}
+\usepackage[normalem]{ulem}
+%\usepackage[light, math]{anttor}
+\usepackage{array,multirow}
+
+\usepackage{latexsym,amsmath,amssymb,amsthm}
+\usepackage{multicol}
+\renewcommand{\arraystretch}{1,25}
+%\usepackage{amssymb}
+\usepackage{breqn}
+\usepackage{graphicx}
+\usepackage{longtable} 
+
+\let\times\relax% Set equal to \relax so that LaTeX thinks it's not defined
+\DeclareMathOperator{\times}{\cdot}
+\usepackage{subfig}
+\graphicspath{ {plots/} }
+
+
+%\sisetup{ exponent-product=\cdot}
+
+\university{Politechnika Wrocławska}
+\major{Informatyka, inż. I st.}
+\tutor{dr hab. Paweł Zieliński}
+\coursegroup{czwartek TN, 11:15}
+
+\author{Miriam Jańczak}
+\studentnumber{229761}
+\title{Obliczenia naukowe}
+\topic{Lista 3}
+
+
+%% Uncomment to change margins size
+%\geometry{top=2.5cm,bottom=2cm,left=2.5cm,right=2.5cm}
+
+%% Uncomment to change vspace between items in lists
+\setlist[enumerate]{itemsep=0pt}
+%\setlist[itemize]{itemsep=0pt}
+%\setlist[description]{itemsep=0pt}
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Metoda bisekcji}
+
+\subsection{Opis problemu}
+Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą bisekcji. Metoda bisekcji (połowienia przedziału) korzysta z własności Darboux dla funkcji ciągłej $f$. Mówi ona o tym, że jeżeli funkcja $f$ jest ciągła w przedziale $[a, b]$ i zmienia znak (tj. $f(a)f(b)<0$), to posiada ona zero w $(a, b)$. Schemat działania metody bisekcji jest następujący. Jeśli $f(a)f(b) < 0$, to obliczane jest $c = \frac{1}{2}(a + b)$ i sprawdzane czy $f(a)f(c) < 0$. Jeżeli tak, to $f$ ma zero w przedziale $[a, c]$, wtedy pod $b$ zostaje podstawione $c$. W przeciwnym razie zachodzi $f(c)f(b) < 0$, wtedy pod $a$ zostaje podstawione $c$. W ten sposób powstaje nowy przedział $[a, b]$, który jest dwa razy krótszy i zawiera zero funkcji $f$. Można więc na nim ponownie zastosować powyższe operacje. Warto zauważyć, że zastosowanie takiego schematu prowadzi do znalezienia nie wszystkich, lecz jednego zera funkcji $f$. Oczywiście, w momencie kiedy $f(a)f(c) = 0$, to $f(c) = 0$ i miejsce zerowe $f$ zostało znalezione. W praktyce jednak, pojawiają się błędy zaokrągleń i otrzymanie $f(c) = 0$ jest mało prawdopodobne, dlatego za kryterium zakończenia obliczeń należy przyjąć wartość odpowiednio bliską zeru w danej arytmetyce. 
+
+\subsection{Rozwiązanie}
+Działanie metody bisekcji przedstawia \Cref{alg:bis}.
+
+\begin{algorithm}[!h]
+\caption{Metoda bisekcji}
+\label{alg:bis}
+\DontPrintSemicolon
+\SetKwFunction{proc}{mbisekcji}
+\SetKwProg{myproc}{}{}{}
+\myproc{\proc{f, a, b, delta, epsilon}}{
+$u \leftarrow f(a)$\;
+$v \leftarrow f(b)$\;
+$e \leftarrow b - a$\;
+$it \leftarrow 0$\;
+\If {$sign(u) = sign(v)$}{
+	\Return $err$ $1$\;
+}
+\While {$e > epsilon$}{
+	$it \leftarrow it + 1$\;
+	$e \leftarrow e / 2$\;
+	$c \leftarrow a + e$\;
+	$w \leftarrow f(c)$\;
+	\If {$|e| < delta$ OR $|w| < epsilon$}{
+		\Return $c, w, it, 0$\;
+	}
+	\If {$sign(w) \neq sign(u)$}{
+		$b \leftarrow c$\;
+		$v \leftarrow w$\;
+	}
+	\Else {
+		$a \leftarrow c$\;
+		$u \leftarrow w$\;	
+	}
+}
+}
+\end{algorithm}
+
+\begin{longtable}[l]{r  c  l}
+%\begin{table}[!h]
+%\centering
+%\begin{tabular}{r  c  l}
+\multicolumn{1}{l}{\textbf{Dane:}}&& \\
+\texttt{f}&--&funkcja $f(x)$ zadana jako anonimowa funkcja (ang. anonymous function), \\
+\texttt{a, b}&--&końce przedziału początkowego, \\
+\texttt{delta, epsilon}&--&dokładności obliczeń, \\
+&& \\
+\multicolumn{1}{l}{\textbf{Wyniki:}}&& \\
+\texttt{(r,v,it,err)}&--&czwórka, gdzie \\
+\texttt{r}&--&przybliżenie pierwiastka równania $f(x) = 0$, \\
+\texttt{v}&--&wartość $f(r)$, \\
+\texttt{it}&--&liczba wykonanych iteracji, \\
+\texttt{err}&--&sygnalizacja błędu \\
+&&$0$ - brak błędu \\
+&&$1$ - funkcja nie zmienia znaku w przedziale [a,b] \\
+%\end{tabular}
+\end{longtable}
+
+
+\noindent Warto zauważyć tutaj kilka rzeczy. Po pierwsze, punkt środkowy $c$ obliczany jest za pomocą instrukcji $c \leftarrow a + (b - a)/2$, co jest lepsze z numerycznego punktu widzenia (dodanie do poprzedniej wartości drobnej poprawki). Wykonanie instrukcji $c \leftarrow (a + b)/2$ mogłoby spowodować, że w ekstremalnych przypadkach punkt $c$ znalazłby się poza przedziałem $[a, b]$. Po drugie, aby pozbyć się zbędnego mnożenia przy sprawdzeniu $f(a)f(c) < 0$, które mogłoby spowodować nadmiar lub niedomiar, zmianę znaku funkcji zbadano za pomocą nierówności $sign(w) \neq sign(u)$. Po trzecie, program uwzględnia trzy warunki zakończenia obliczeń. Warunek $e > epsilon$ mówi o tym, kiedy jeszcze jest możliwa iteracja w danym przedziale. Oprócz tego obliczenia są przerywane kiedy błąd jest dostatecznie mały ($abs(e) < delta$) lub gdy $f(c)$ jest dostatecznie bliskie zeru ($abs(w) < epsilon$).
+
+\section{Metoda Newtona}
+
+\subsection{Opis problemu}
+Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą Newtona.
+
+\subsection{Rozwiązanie}
+
+\begin{algorithm}[h]
+\caption{Metoda Newtona}
+\label{alg:new}
+\DontPrintSemicolon
+\SetKwFunction{proc}{mstycznych}
+\SetKwProg{myproc}{}{}{}
+\myproc{\proc{f, $p_f$, $x_0$, delta, epsilon, maxit}}{
+$v \leftarrow f(x_0)$\;
+
+\If {$|v| < epsilon$}{
+	\Return $x_0, v, 0, 0$\;
+}
+
+\If {$|p_f(x_0)| < epsilon$}{
+	\Return $err$ $2$\;
+}
+
+\For {$it \leftarrow 1$ \KwTo $maxit$}{
+	$x_1 \leftarrow x_0 - (v/p_f(x_0))$\;
+	$v \leftarrow f(x_1)$\;
+	\If {$|x_1 - x_0| < delta$ OR $|v| < epsilon$}{
+		\Return $x_1, v, it, 0$\;
+	}
+	$x_0 \leftarrow x_1$\;
+}
+\Return $err$ $1$\;
+}
+\end{algorithm}
+
+\begin{longtable}[l]{r  c  l}
+%\begin{table}[!h]
+%\centering
+%\begin{tabular}{r  c  l}
+\multicolumn{1}{l}{\textbf{Dane:}}&& \\
+\texttt{f, pf}&--&funkcja $f(x)$ oraz pochodna $f'(x)$ zadane jako anonimowe funkcje, \\
+\texttt{x0}&--&przybliżenie początkowe, \\
+\texttt{delta, epsilon}&--&dokładności obliczeń, \\
+\texttt{maxit}&--&maksymalna dopuszczalna liczba iteracji, \\
+&& \\
+\multicolumn{1}{l}{\textbf{Wyniki:}}&& \\
+\texttt{(r,v,it,err)}&--&czwórka, gdzie \\
+\texttt{r}&--&przybliżenie pierwiastka równania $f(x) = 0$, \\
+\texttt{v}&--&wartość $f(r)$, \\
+\texttt{it}&--&liczba wykonanych iteracji, \\
+\texttt{err}&--&sygnalizacja błędu \\
+&&$0$ - metoda zbieżna \\
+&&$1$ - nie osiągnięto wymaganej dokładności w \texttt{maxit} iteracji \\
+&&$2$ - pochodna bliska zeru \\
+%\end{tabular}
+\end{longtable}
+
+
+\section{Metoda siecznych}
+
+\subsection{Opis problemu}
+Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą siecznych.
+
+\subsection{Rozwiązanie}
+\begin{algorithm}[h]
+\caption{Metoda siecznych}
+\label{alg:sie}
+\DontPrintSemicolon
+\SetKwFunction{proc}{msiecznych}
+\SetKwProg{myproc}{}{}{}
+\myproc{\proc{f, $x_0$, $x_1$, delta, epsilon, maxit}}{
+$f_{x_0} \leftarrow f(x_0)$\;
+$f_{x_1} \leftarrow f(x_1)$\;
+
+\For {$it \leftarrow 1$ \KwTo $maxit$}{
+	\If {$|f_{x_0}| > |f_{x_1}|$}{
+		$x_0 \leftrightarrow x_1$\;
+		$f_{x_0} \leftrightarrow f_{x_1}$\;
+	}
+	$s \leftarrow (x_1 - x_0)/(f_{x_1} - f_{x_0})$\;
+	$x_1 \leftarrow x_0$\;
+	$f_{x_1} \leftarrow f_{x_0}$\;
+	$x_0 \leftarrow x_0 - (f_{x_0} \times s)$\;
+	$f_{x_0} \leftarrow f(x_0)$\;
+	\If {$|x_1 - x_0| < delta$ OR $|f_{x_0}| < epsilon$}{
+		\Return $x_0, f_{x_0}, it, 0$\;
+	}
+}
+\Return $err$ $1$\;
+}
+\end{algorithm}
+
+\begin{longtable}[l]{r  c  l}
+%\begin{table}[!h]
+%\centering
+%\begin{tabular}{r  c  l}
+\multicolumn{1}{l}{\textbf{Dane:}}&& \\
+\texttt{f}&--&funkcja $f(x)$ zadana jako anonimowa funkcja, \\
+\texttt{x0, x1}&--&przybliżenia początkowe, \\
+\texttt{delta, epsilon}&--&dokładności obliczeń, \\
+\texttt{maxit}&--&maksymalna dopuszczalna liczba iteracji, \\
+&& \\
+\multicolumn{1}{l}{\textbf{Wyniki:}}&& \\
+\texttt{(r,v,it,err)}&--&czwórka, gdzie \\
+\texttt{r}&--&przybliżenie pierwiastka równania $f(x) = 0$, \\
+\texttt{v}&--&wartość $f(r)$, \\
+\texttt{it}&--&liczba wykonanych iteracji, \\
+\texttt{err}&--&sygnalizacja błędu \\
+&&$0$ - metoda zbieżna \\
+&&$1$ - nie osiągnięto wymaganej dokładności w \texttt{maxit} iteracji \\
+%\end{tabular}
+\end{longtable}
+
+
+\section{Wyznaczanie pierwiastka równania $\sin{x}-(\frac{1}{2}x)^2 = 0$}
+
+\subsection{Opis problemu}
+Wyznaczanie pierwiastka równania $\sin{x} = -(\frac{1}{2}x)^2$ z użyciem metod:
+\begin{enumerate}[(i)]
+\item bisekcji (na przedziale początkowym $[1.5, 2.0]$),
+\item Newtona (dla przybliżenia początkowego $x_0 = 1.5$),  
+\item siecznych (dla przybliżeń początkowych $x_0 = 1.0, x_1 = 2.0$).
+\end{enumerate}
+Dla wszystkich metod zastosowano parametry dokładności $\delta = \frac{1}{2}10^{-5}$ oraz $\epsilon = \frac{1}{2}10^{-5}$.
+
+\subsection{Rozwiązanie}
+Zaimplementowano funkcję $f(x) = \sin{x}-(\frac{1}{2}x)^2$ oraz jej pochodną $f'(x) = \cos{x} - \frac{1}{2}x$ (potrzebną do poprawnego działania metody Newtona) i za pomocą metod stworzonych w zadaniach 1 -- 3 znaleziono szukane miejsca zerowe. Za maksymalną dopuszczalną liczbę iteracji przyjęto $32$.
+
+\subsection{Wyniki}
+
+Wyniki działania metod przedstawia \Cref{table:1}.
+
+\begin{table}[h]
+        \centering
+        \footnotesize
+\begin{tabular}{c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 1,
+		table-figures-decimal = 16
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 16,
+		table-figures-exponent = 2
+		]|c|c}
+Metoda& {Miejsce zerowe ($x_0$)} & {Wartość funkcji ($f(x_0)$)} & Liczba iteracji & Błąd \\ \hline
+Bisekcji &1.9337539672851562&-2.7027680138402843e-7& 16 & 0 \\ 
+Newtona &1.933753779789742&-2.2423316314856834e-8& 4 & 0 \\ 
+Siecznych &1.9337539405015145&-2.3487103129049558e-7& 5 & 0 \\ 
+\end{tabular}
+\caption{Miejsca zerowe funkcji $f(x) = \sin{x}-(\frac{1}{2}x)^2$ obliczone za pomocą danych metod.}
+\label{table:1}
+\end{table}	
+
+\subsection{Wnioski}
+Powyższy przykład dobrze ukazuje różnicę w liczbie wykonanych iteracji dla poszczególnych metod. Metoda bisekcji potrzebowała aż szesnastu iteracji żeby znaleźć miejsce zerowe z podaną dokładnością, z kolei metoda Newtona i siecznych odpowiednio czterech i pięciu. Takie wyniki odzwierciedlają teoretyczną zbieżność tych metod. Metoda bisekcji posiada bowiem zbieżność liniową, metoda Newtona ma kwadratowy współczynnik zbieżności, a metoda siecznych zbiega nadliniowo ($\approx 1.62$). Analizując dane mogłoby się zdawać, że metoda bisekcji jest nie tylko metodą najwolniejszą, ale i najmniej dokładną, co jednak jest zbyt śmiałym wnioskiem. Bardziej można powiedzieć, że jest ,,najstabilniejsza'' ze wszystkich metod, znalazła bowiem ona wartość nie tyle najbliższą zeru, co wskazanej dokładności (niewątpliwą zaletą jest również to, że jest ona zbieżna globalnie i o ile końce przedziału początkowego faktycznie będą miały różne znaki to zawsze zbiegnie do zera funkcji). Dzięki temu, że metody Newtona i siecznych zbiegały szybciej niż metoda bisekcji w tym wypadku osiągnęły większą dokładność i ostatecznie znalazły się bliżej rzeczywistego zera, jednak dla innych funkcji, czy choćby inaczej dobranych przedziałów, okaże się że nie zawsze tak jest.
+
+\section{Punkt przecięcia wykresów funkcji $y = 3x$ i $y = e^x$}
+
+\subsection{Opis problemu}
+Znalezienie, przy użyciu metody bisekcji, wartości zmiennej $x$, dla której przecinają się wykresy funkcji $y=3x$ oraz $y=e^x$.
+
+\subsection{Rozwiązanie}
+Łatwo zauważyć, że problem sprowadza się do rozwiązania równania $e^x - 3x = 0$, czyli znalezienia miejsc zerowych funkcji $f(x) = e^x - 3x$. W tym celu zaimplementowana została funkcja $f$, a także skorzystano z metody bisekcji stworzonej w zadaniu pierwszym. Jako dokładności obliczeń przyjęte zostały zadane $\delta = 10^{-4}$ oraz $\epsilon = 10^{-4}$. Przedziały początkowe wyznaczono w sposób eksperymentalny oparty na oszacowaniu wartości funkcji. W tym celu posłużono się wykresem przedstawionym na rysunku \ref{fig:zad51}. Zostały wybrane przedziały $[0, 1]$ oraz $[1, 2]$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{zad51}\hfill
+\caption{Wykresy funkcji $3x$ oraz $e^x$ wykonane w programie \emph{Wolfram Alpha}} \label{fig:zad51}
+\end{figure} 
+
+\subsection{Wyniki}
+Otrzymane rozwiązania prezentuje \Cref{table:2}. Znalezione punkty przecięcia to $0.619140625$ i $1.5120849609375$.
+
+\begin{table}[h]
+        \centering
+        \footnotesize
+\begin{tabular}{c|c|c}
+& $x_0$ & $x_1$ \\ \hline
+Przedział & $[0, 1]$ & $[1, 2]$ \\ 
+Wartość & $0.619140625$ & $1.5120849609375$ \\ 
+Niedokładność $|f(x_i)|$ & $9.066320343276146 \times 10^{-5}$ & $7.618578602741621 \times 10^{-5}$ \\
+Liczba iteracji &$9$&$13$ \\
+\end{tabular}
+\caption{Miejsca zerowe funkcji $f(x) = e^x - 3x$ obliczone za pomocą metody bisekcji.}
+\label{table:2}
+\end{table}	
+
+\subsection{Wnioski}
+Głównym problemem w wyznaczeniu punktów przecięcia się wykresów funkcji $y=3x$ i $y=e^x$ metodą bisekcji jest wybór przedziałów początkowych. Posiadając pewne umiejętności analityczne można spodziewać się obecności dwóch takich punktów w stosunkowo niewielkiej odległości od zera. Ciężej jednak szybko stwierdzić gdzie dokładnie należałoby odpowiednich przedziałów szukać. Uwagę zwraca fakt, że długość wybranych przedziałów jest niewielka, co może świadczyć o tym że do ich znalezienia była potrzebna dość dobra znajomość przebiegu funkcji $f(x) = e^x - 3x$ lub co najmniej kilka eksperymentów. W tym wypadku posłużono się wykresem, jednak ciężej byłoby znaleźć odpowiednie przedziały gdyby takiego narzędzia zabrakło. Kandydatem na przedział początkowy mógłby być przecież np. $[0, 2]$, na którego końcach funkcja nie zmienia znaku. Można jednak zauważyć, że przy rozsądnie dobranych przybliżeniach początkowych znajomość w miarę ogólnego przebiegu funkcji $f$ pozwala dużo łatwiej zastosować metodę siecznych czy metodę Newtona, które w tym wypadku okazują się zbieżne.
+
+\section{Miejsce zerowe funkcji $f_1(x) = e^{1-x} - 1$ i $f_2(x) = xe^{-x}$}
+
+\subsection{Opis problemu}
+Znalezienie pierwiastków funkcji $f_1(x)=e^{1-x}-1$ oraz $f_2(x)=xe^{-x}$ przy pomocy metod bisekcji, stycznych oraz siecznych z dokładnością obliczeń $\delta=10^{-5}$ oraz $\epsilon=10^{-5}$.
+
+\subsection{Rozwiązanie}
+
+\subsection{Wyniki}
+Analizując równania funkcji $f_1$ i $f_2$ niemal natychmiast nasuwają się poprawne rozwiązania -- $1$ dla $f_1$ oraz $0$ dla $f_2$.
+
+\subsection{Wnioski}
+
+%\begin{algorithm}[h]
+%\caption{Wyznaczanie epsilonów maszynowych.}
+%\label{alg:macheps}
+%\SetKwData{Macheps}{macheps}\SetKwData{NMacheps}{new\_{}macheps}
+%
+%\Macheps $\leftarrow 1.0$\;
+%\NMacheps $\leftarrow 1.0$\;
+%\While {$1.0 + \NMacheps > 1.0$}{
+%$\Macheps\leftarrow \NMacheps$\;
+%$\NMacheps \leftarrow \NMacheps / 2.0$\;
+%}
+%\Return \Macheps
+%\end{algorithm}
+
+\end{document}
