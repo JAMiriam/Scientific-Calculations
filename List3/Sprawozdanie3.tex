@@ -432,19 +432,10 @@ $x_0$&$x_1$& {$r$} & {$f(r)$} & Liczba iteracji & Błąd \\ \hline
 \end{table}
 
 \subsection{Wnioski}
-
-%\begin{algorithm}[h]
-%\caption{Wyznaczanie epsilonów maszynowych.}
-%\label{alg:macheps}
-%\SetKwData{Macheps}{macheps}\SetKwData{NMacheps}{new\_{}macheps}
-%
-%\Macheps $\leftarrow 1.0$\;
-%\NMacheps $\leftarrow 1.0$\;
-%\While {$1.0 + \NMacheps > 1.0$}{
-%$\Macheps\leftarrow \NMacheps$\;
-%$\NMacheps \leftarrow \NMacheps / 2.0$\;
-%}
-%\Return \Macheps
-%\end{algorithm}
+Analiza wyników dla metody bisekcji przedstawionych w tabeli \ref{table:3} pozwala stwierdzić, że dla funkcji $f_1$ metoda ta jest zbieżna do faktycznego zera nawet dla bardzo dużych przedziałów, potrzebuje wtedy jednak odpowiednio większej liczby iteracji. Natomiast przy obliczaniu zer funkcji $f_2$ należy uważać na dobór przedziałów nawet stosując metodę bisekcji, gdyż funkcja ta osiąga zero w nieskończoności i wzięcie bardzo dużego przedziału początkowego może skutkować zakończeniem się obliczeń po jednej iteracji, gdyż wartość będzie dostatecznie bliska wartości zera, jednak bardzo odległa od faktycznego pierwiastka funkcji. \\
+\linebreak
+Wyniki uzyskane za pomocą metody Newtona prezentowane w tabeli \ref{table:4} pozwalają zauważyć że dla $f_1$ dla wartości nieco bardziej oddalonych od zera liczba iteracji pozwalająca znaleźć ten pierwiastek znacznie rośnie, aż w końcu metoda staje się rozbieżna (dla przybliżenia początkowego równego osiem po milionie iteracji nie znaleziono wartości dostatecznie bliskiej pierwiastkowi). Kolejnym niebezpieczeństwem jakie można zauważyć jest to, że w pewnym momencie funkcja $f_1$, bardzo wolno maleje, jest prawie stała, więc jej pochodna osiąga wartość bliską zeru i zastosowanie metody Newtona staje się niemożliwe. W przypadku funkcji $f_2$ pochodna zeruje się gdy $x_0 = 1$ i dla każdej wartości przybliżenia początkowego większej od jeden metoda nie zbiega do faktycznego zera funkcji, ale znajduje wartość dostatecznie bliską zeru odległą od miejsca zerowego z powodu granicy $f_2$ równej zero w nieskończoności. \\
+\linebreak
+\Cref{table:5} zawiera wyniki obliczeń wykonanych metodą siecznych. Dla funkcji $f_1$ dla wartości przybliżeń początkowych nie tak bliskich zeru możemy obserwować rozbieżność podobną jak w metodzie Newtona. Dziwić może wynik uzyskany dla przybliżeń $-2$ i $6$, jest to przykład, kiedy metoda nie znajduje wartości funkcji bliskiej zeru, ale w pewnym momencie zachodzi warunek $|x_1 - x_0| < delta$ i metoda kończy działanie. Wynika to z faktu, że różnica między wartościami funkcji $f_1$ w $-2$ i $6$ jest bardzo duża i kolejne przybliżenie wyznaczane jest bardzo blisko $6$, a przy kolejnych iteracjach ta wartość jest jeszcze pomniejszana. Dla funkcji $f_2$ analogicznie do metody Newtona, metoda siecznych dla odpowiednio odległych od pierwiastka przybliżeń początkowych nie znajduje faktycznego zera, ale punkty od niego oddalone ze względu na granicę funkcji. \\
 
 \end{document}
