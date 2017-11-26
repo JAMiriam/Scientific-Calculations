@@ -311,9 +311,91 @@ Głównym problemem w wyznaczeniu punktów przecięcia się wykresów funkcji $y
 Znalezienie pierwiastków funkcji $f_1(x)=e^{1-x}-1$ oraz $f_2(x)=xe^{-x}$ przy pomocy metod bisekcji, stycznych oraz siecznych z dokładnością obliczeń $\delta=10^{-5}$ oraz $\epsilon=10^{-5}$.
 
 \subsection{Rozwiązanie}
+Zaimplementowano podane funkcje oraz wyliczono ich pochodne (potrzebne w metodzie Newtona). W celu znalezienia pierwiastków zostały wykorzystane metody stworzone w zadaniach 1 -- 3. Przeprowadzona została analiza funkcji $f_1$ i $f_2$, które zostały przedstawione na wykresie \ref{fig:zad61}. Na tej podstawie wybrano odpowiednie parametry mające na celu ukazanie właściwości poszczególnych metod oraz przykładów ich złego stosowania.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{zad6}\hfill
+\caption{Wykresy funkcji $f(x)=e^{1-x}-1$ oraz $g(x)=xe^{-x}$ wykonane w programie \emph{Wolfram Alpha}} \label{fig:zad61}
+\end{figure} 
 
 \subsection{Wyniki}
-Analizując równania funkcji $f_1$ i $f_2$ niemal natychmiast nasuwają się poprawne rozwiązania -- $1$ dla $f_1$ oraz $0$ dla $f_2$.
+Podczas analizy równania funkcji $f_1$ i $f_2$ niemal natychmiast nasuwają się poprawne rozwiązania -- $1$ dla $f_1$ oraz $0$ dla $f_2$. Większą uwagę poświęcono jednak pewnym eksperymentom związanym z zastosowaniem metod, niż uzyskaniu tylko poprawnych wyników, i tak \Cref{table:3} zawiera wyniki działania metody bisekcji dla różnych przedziałów początkowych, \Cref{table:4} wyniki uzyskane za pomocą metody Newtona dla różnych przybliżeń początkowych $x_0$ i wreszcie \Cref{table:5} wyniki metody siecznych dla różnych przybliżeń $x_0$ i $x_1$.
+
+\begin{table}[h]
+        \centering
+        \footnotesize
+\begin{tabular}{c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 3,
+		table-figures-decimal = 12,
+		table-figures-exponent = 3
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 15,
+		table-figures-exponent = 3
+		]|c}
+Przedział& {$x_0$} & {$f(x_0)$} & Liczba iteracji \\ \hline
+\multicolumn{4}{c}{$f_1$} \\ \hline
+$[0.0,1.5]$&1.0000076293945312&-7.6293654275305656e-6&16 \\
+$[0.5,3.0]$&0.9999923706054688&7.629423635080457e-6&16 \\
+$[-4.0,4.0]$&1.0&0.0&3 \\
+$[0.0,100.0]$&0.9999990463256836&9.536747711536009e-7&22 \\
+$[-10.0,2000.0]$&1.0000018030405045&-1.803038878978036e-6&27 \\ \hline
+\multicolumn{4}{c}{$f_2$} \\ \hline
+$[-0.5,1.0]$&-7.62939453125e-6&-7.629452739132958e-6&16 \\
+$[-0.25,1.5]$&-7.62939453125e-6&-7.629452739132958e-6&15 \\
+$[-1.0,6.0]$&-3.814697265625e-6&-3.814711817567984e-6&18 \\
+$[-1.5,100.0]$&49.25&2.010958004139294e-20&1 \\
+$[-5.0,1000.0]$&497.5&4.318056675122884e-214&1 \\
+\end{tabular}
+\caption{Miejsca zerowe $f_1$ i $f_2$ obliczone za pomocą metody bisekcji.}
+\label{table:3}
+\end{table}
+
+\begin{table}[h]
+        \centering
+        \footnotesize
+\begin{tabular}{c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 3,
+		table-figures-decimal = 16,
+		table-figures-exponent = 2
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 16,
+		table-figures-exponent = 3
+		]|c|c}
+Przedział& {$x_0$} & {$f(x_0)$} & Liczba iteracji & Błąd \\ \hline
+\multicolumn{5}{c}{$f_1$} \\ \hline
+-1.0&0.9999922654776594&7.734552252003368e-6&5&0 \\
+0.0&0.9999984358892101&1.5641120130194253e-6&4&0 \\
+1.0&1.0&0.0&0&0 \\
+2.0&0.9999999810061002&1.8993900008368314e-8&5&0 \\
+5.0&0.9999996427095682&3.572904956339329e-7&54&0 \\
+7.0&0.9999999484165362&5.15834650549607e-8&401&0 \\
+8.0&{---}&{---}&{---}&1 \\
+13.0&{---}&{---}&{---}&2 \\ \hline
+\multicolumn{5}{c}{$f_2$} \\ \hline
+-2.0&-1.425500682806244e-9&-1.425500684838296e-9&7&0 \\
+-1.0&-3.0642493416461764e-7&-3.0642502806087233e-7&5&0 \\
+0.0&0.0&0.0&0&0 \\
+0.5&-3.0642493416461764e-7&-3.0642502806087233e-7&5&0 \\
+1.0&{---}&{---}&{---}&2 \\
+2.0&14.398662765680003&8.036415344217211e-6&10&0 \\
+5.0&15.19428398343915&3.827247505782987e-6&9&0 \\
+100.0&100.0&3.7200759760208363e-42&0&0 \\
+
+\end{tabular}
+\caption{Miejsca zerowe $f_1$ i $f_2$ obliczone za pomocą metody stycznych.}
+\label{table:4}
+\end{table}
 
 \subsection{Wnioski}
 
