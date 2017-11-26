@@ -169,17 +169,14 @@ $v \leftarrow f(x_0)$\;
 
 \noindent Na początku działania algorytmu sprawdzane są warunki natychmiastowego zakończenia, gdy wartość funkcji dla przybliżenia początkowego jest dostatecznie bliska zeru - zwracany jest wynik oraz kiedy pochodna jest bliska zeru - niemożliwe jest wtedy zastosowanie metody. Następnie dla zadanej maksymalnej liczby iteracji wyznaczane są kolejne przybliżenia zera funkcji, które są dane rekurencyjnym wzorem $x_{n+1} := x_n - \dfrac{f(x_n)}{f'(x_n)}$ wynikającym bezpośrednio z definicji metody. Obliczenia są kończone kiedy znalezione zero mieści się w dokładności, bądź też odległość kolejnych przybliżeń jest dostatecznie mała. W przypadku nieotrzymania wyniku w zadanej liczbie iteracji zwracany jest błąd.
 
-
 \section{Metoda siecznych}
 
 \subsection{Opis problemu}
-Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą siecznych.
+Napisanie funkcji rozwiązującej równanie $f(x) = 0$ metodą siecznych. Metoda siecznych wywodzi się bezpośrednio z metody Newtona, dla której starano się się uniknąć kłopotliwego wyliczania pochodnej funkcji. W tym celu $f'(x)$ zastąpiono ilorazem różnicowym -- $f'(x) \approx \dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}}$. Ta równość, wynikająca z definicji pochodnej daje właśnie metodę siecznych opisaną wzorem $x_{n+1} := x_n - f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}$. Zauważyć można, że $x_{n+1}$ wyrażone jest przez $x_n$ oraz $x_{n-1}$, dlatego potrzebne są dwa punkty początkowe, jednak każde nowe $x_{n+1}$ wymaga już tylko obliczenia jednej nowej wartości funkcji $f$. Metoda siecznych jest wolniej zbieżna od metody Newtona, jednak każdy krok tej metody wymaga obliczenia tylko jednej wartości funkcji, zaś w metodzie Newtona trzeba obliczyć dwie takie wartości, mianowicie $f(x)$ i $f'(x)$. W obu metodach najbardziej kosztowne jest obliczanie właśnie tych wartości i w tym sensie para kroków metody siecznych jest porównywalna z jednym krokiem metody Newtona.
 
 \subsection{Rozwiązanie}
-
 Działanie metody siecznych przedstawia \Cref{alg:sie}.
-
-\begin{algorithm}[h]
+\begin{algorithm}[!h]
 \caption{Metoda siecznych}
 \label{alg:sie}
 \DontPrintSemicolon
@@ -206,7 +203,6 @@ $f_{x_1} \leftarrow f(x_1)$\;
 \Return $err$ $1$\;
 }
 \end{algorithm}
-
 \begin{longtable}[l]{r  c  l}
 %\begin{table}[!h]
 %\centering
@@ -227,7 +223,7 @@ $f_{x_1} \leftarrow f(x_1)$\;
 &&$1$ - nie osiągnięto wymaganej dokładności w \texttt{maxit} iteracji \\
 %\end{tabular}
 \end{longtable}
-
+W algorytmie zastosowano metodę siecznych w której kolejne wartości funkcji mają nierosnące moduły. Przestawia on wartości $x_0$ i $x_1$, kiedy wymaga tego utrzymanie nierówności $|f_{x_0}| \leq |f_{x_1}|$. Algorytm kończy obliczenia $x_{n+1} := x_n - f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}$, kiedy znalezione zero mieści się w dokładności, bądź też odległość kolejnych przybliżeń jest dostatecznie mała. W przypadku nieotrzymania wyniku w zadanej liczbie iteracji zwracany jest błąd.
 
 \section{Wyznaczanie pierwiastka równania $\sin{x}-(\frac{1}{2}x)^2 = 0$}
 
