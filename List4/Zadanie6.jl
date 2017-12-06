@@ -8,7 +8,7 @@ using interpolacja
 f(x) = abs(x)
 g(x) = 1.0 / (1.0 + x^2)
 
-rysujNnfx(f, -1.0, 1.0, 5)
+rysujNnfx(f, -1.0, 1.0, 5) 
 rysujNnfx(f, -1.0, 1.0, 10)
 rysujNnfx(f, -1.0, 1.0, 15)
 

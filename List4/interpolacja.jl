@@ -5,6 +5,7 @@
 module interpolacja
 export ilorazyRoznicowe, warNewton, naturalna, rysujNnfx
 
+using LaTeXStrings
 using Plots
 plotly()
 
@@ -37,7 +38,7 @@ end
 # out: nt - wartość wielomiau w punkcie t
 function warNewton(x :: Vector{Float64}, fx :: Vector{Float64}, t :: Float64)
 
-    nt :: Float64       # wartość wielomianu w punkcie t - deklaracja
+    nt = 1.0            # wartość wielomianu w punkcie t - deklaracja
     n = length(fx)      # długość wektorów
     nt = fx[n]
 
@@ -102,8 +103,10 @@ function rysujNnfx(f, a :: Float64, b :: Float64, n :: Int)
         img_y[i] = f(img_x[i])
         kh += h
     end
-
-    plt = plot(img_x, [img_y, img_new], linewidth=2.0)
+    labels = Array{String}(1, 3)
+    labels[1] = "f(x)"
+    labels[2] = "w(x)"
+    plt = plot(img_x, [img_y, img_new], label = labels, linewidth=2.0)
     display(plt)
 end
 end

@@ -8,7 +8,7 @@
 # out: nt - wartość wielomiau w punkcie t
 function warNewton(x :: Vector{Float64}, fx :: Vector{Float64}, t :: Float64)
 
-    nt :: Float64       # wartość wielomianu w punkcie t - deklaracja
+    nt = 1.0            # wartość wielomianu w punkcie t - deklaracja
     n = length(fx)      # długość wektorów
     nt = fx[n]
 
