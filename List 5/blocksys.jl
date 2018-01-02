@@ -69,13 +69,30 @@ function write_solution(file_path::String, x::Array{Float64}, n::Int64, err::Boo
 end
 
 
+# function right_side_vector(A::SparseMatrixCSC{Float64, Int64}, n::Int64)
+# 	x = ones(Float64, n)
+# 	b = transpose(A)*x
+# 	return b
+# end
+
+
 # Funkcja obliczająca wektor prawych stron dla zadanej macierzy
 # i wektora jednostkowego
 # in:	A - zadana macierz, n - rozmiar macierzy
 # out:	b - obliczony wektor prawych stron
-function right_side_vector(A::SparseMatrixCSC{Float64, Int64}, n::Int64)
-	x = ones(Float64, n)
-	b = transpose(A)*x
+function right_side_vector(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64)
+	b = Array{Float64}(n)
+	for i in 1 : n
+		from_col = convert(Int64, max(l * floor((i-1) / l) - 1, 1))
+		last_col = convert(Int64, min(l + l * floor((i-1) / l), n))
+		for j in from_col : last_col
+			b[i] += A[j, i]
+		end
+
+		if (i + l <= n)
+			b[i] += A[i + l, i]
+		end
+	end
 	return b
 end
 
@@ -151,7 +168,8 @@ function gaussian_elimination_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n:
 	x = Array{Float64}(n)
 	for i in n : -1 : 1
 		prev_total = 0.0
-		for j in i + 1 : n
+		last_col = convert(Int64, min(2*l + l*floor((p[i]+1)/l), n))
+		for j in i + 1 : last_col
 			prev_total += A[j,p[i]] * x[j]
 		end
 		x[i] = (b[p[i]] - prev_total) / A[i, p[i]]
@@ -237,7 +255,7 @@ function solve_from_LU_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n::Int64,
 	z = Array{Float64}(n)
 	for i in 1 : n
 		prev_total = 0.0
-		from_col = convert(Int64, max(l * floor((i-1) / l) - 1, 1))
+		from_col = convert(Int64, max(l * floor((p[i]-1) / l) - 1, 1))
 		for j in from_col : i-1
 			prev_total += A[j, p[i]] * z[j]
 		end
@@ -247,7 +265,8 @@ function solve_from_LU_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n::Int64,
 	x = Array{Float64}(n)
 	for i in n : -1 : 1
 		prev_total = 0.0
-		for j in i + 1 : n
+		last_col = convert(Int64, min(2*l + l*floor((p[i]+1)/l), n))
+		for j in i + 1 : last_col
 			prev_total += A[j, p[i]] * x[j]
 		end
 		x[i] = (z[i] - prev_total) / A[i, p[i]]
