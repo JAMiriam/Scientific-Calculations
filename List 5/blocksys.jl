@@ -14,19 +14,18 @@ matrix_to_LU, solve_from_LU, matrix_to_LU_with_pivots, solve_from_LU_with_pivots
 #		l - wielkość bloku
 function read_matrix(file_path::String)
 	open(file_path) do file
-		line = split(readline(file))
-		n = parse(Int64, line[1])
-		l = parse(Int64, line[2])
-		v = convert(Int64, n / l)
-		el_num = v * l * l + (v - 1) * 2 * l + (v - 1) * l
-		I = Array{Int64}(el_num)
+		ln = split(readline(file))
+		n = parse(Int64, ln[1])
+		l = parse(Int64, ln[2])
+		el_num = n*l + 3*(n-l)
 		J = Array{Int64}(el_num)
+		I = Array{Int64}(el_num)
 		V = Array{Float64}(el_num)
 		it = 1
 		while !eof(file)
 			ln = split(readline(file))
-			I[it] = parse(Int64, ln[2])
 			J[it] = parse(Int64, ln[1])
+			I[it] = parse(Int64, ln[2])
 			V[it] = parse(Float64, ln[3])
 			it += 1
 		end
@@ -43,10 +42,10 @@ function read_vector(file_path::String)
 	open(file_path) do file
 		n = parse(Int64, readline(file))
 		b = Array{Float64}(n)
-		it = 1
+		it = 0 #1
 		while !eof(file)
-			b[it] = parse(Float64, readline(file))
-			it += 1
+			b[++it] = parse(Float64, readline(file))
+			# it += 1
 		end
 		return b
 	end
@@ -58,22 +57,15 @@ end
 #		n - rozmiar macierzy, err - wybór zapisu błędu względnego
 function write_solution(file_path::String, x::Array{Float64}, n::Int64, err::Bool)
 	open(file_path, "w") do file
-		if err
-			exact_solution = ones(n)
-			println(file, norm(exact_solution - x) / norm(x))
+		if (err)
+			relative_error = norm(ones(n) - x) / norm(x)
+			println(file, relative_error)
 		end
-		for i in 1:n
+		for i in 1 : n
 			println(file, x[i])
 		end
 	end
 end
-
-
-# function right_side_vector(A::SparseMatrixCSC{Float64, Int64}, n::Int64)
-# 	x = ones(Float64, n)
-# 	b = transpose(A)*x
-# 	return b
-# end
 
 
 # Funkcja obliczająca wektor prawych stron dla zadanej macierzy
@@ -177,7 +169,9 @@ function gaussian_elimination_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n:
 	return x
 end
 
-
+# Funkcja obliczająca rozkład LU bez wyboru elementu głównego
+# dla macierzy o zadanej budowie
+# in:	A - zadana macierz, n - rozmiar macierzy, l - wielkość bloku
 function matrix_to_LU(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64)
 	for k in 1 : n-1
 		last_row = convert(Int64, min(l + l * floor((k+1) / l), n))
@@ -195,7 +189,11 @@ function matrix_to_LU(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64)
 	end
 end
 
-
+# Funkcja rozwiązująca układ równań liniowych z rozkładu LU
+# stworzonego bez wyboru elementu głównego
+# in:	A - macierz w rozkładzie LU, n - rozmiar macierzy, l - wielkość bloku,
+#		b - wektor prawych stron
+# out:	x - rozwiązanie układu
 function solve_from_LU(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64, b::Vector{Float64})
 	z = Array{Float64}(n)
 	for i in 1 : n
@@ -219,7 +217,10 @@ function solve_from_LU(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64, b
 	return x
 end
 
-# tutaj to p trzeba chyba zwracać
+# Funkcja obliczająca rozkład LU z częściowym wyborem elementu głównego
+# dla macierzy o zadanej budowie
+# in:	A - zadana macierz, n - rozmiar macierzy, l - wielkość bloku
+# out:	p - wektor permutacji wierszy
 function matrix_to_LU_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64)
 	p = collect(1:n)
 
@@ -249,7 +250,11 @@ function matrix_to_LU_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n::Int64, 
 	return p
 end
 
-# nie mam pojęcia jak to działa... ale wierzę że działa ;P
+# Funkcja rozwiązująca układ równań liniowych z rozkładu LU
+# stworzonego z częściowym wyborem elementu głównego
+# in:	A - macierz w rozkładzie LU, n - rozmiar macierzy, l - wielkość bloku,
+#		b - wektor prawych stron, p - wektor permutacji wierszy
+# out:	x - rozwiązanie układu
 function solve_from_LU_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n::Int64,
 							l::Int64, b::Vector{Float64}, p::Vector{Int64})
 	z = Array{Float64}(n)
