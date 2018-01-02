@@ -42,10 +42,10 @@ function read_vector(file_path::String)
 	open(file_path) do file
 		n = parse(Int64, readline(file))
 		b = Array{Float64}(n)
-		it = 0 #1
+		it = 0
 		while !eof(file)
-			b[++it] = parse(Float64, readline(file))
-			# it += 1
+			it += 1
+			b[it] = parse(Float64, readline(file))
 		end
 		return b
 	end
