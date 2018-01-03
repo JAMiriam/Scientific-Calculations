@@ -410,7 +410,7 @@ k_{from}(r) = \max\left\lbrace\ell \cdot \left \lfloor\frac{r - 1}{\ell}\right \
 \end{algorithm} 
 
 \subsection{Wyniki}
-Zestawienie czasu rozwiązywania układów równań oraz zużytej pamięci, dla coraz większych macierzy $\mA$ standardową metodą eliminacji Gaussa jak również dwoma modyfikacjami -- bez wyboru elementu głównego i jego częściowym wyborem przedstawia \Cref{table:1}, dla metody bez modyfikacji obliczenia przerwano po rozwiązaniu układu z $6000$ niewiadomych, ponieważ zbyt duże zużycie pamięci uniemożliwiało dalszą pracę komputera.
+Zestawienie czasu rozwiązywania układów równań oraz zużytej pamięci, dla coraz większych macierzy $\mA$ standardową metodą eliminacji Gaussa jak również dwoma modyfikacjami -- bez wyboru elementu głównego i jego częściowym wyborem przedstawia \Cref{table:1}, dla metody bez modyfikacji obliczenia przerwano po rozwiązaniu układu z $6000$ niewiadomych, ponieważ zbyt duże zużycie pamięci uniemożliwiało dalszą pracę komputera. We wszystkich przedstawianych wynikach przyjęto rozmiar bloku $\ell = 4$.
 
 \begin{table}[!h]
         \centering
@@ -445,7 +445,7 @@ $n$ & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć
 \label{table:1}
 \end{table}	
 
-\noindent Dla wspomnianych wcześniej metod zbadano również błędy, kiedy wektor prawych stron był wyliczany, przedstawia je \Cref{table:2}. Widać tutaj, że błędy wynikające ze stosowania metody eliminacji Gaussa z częściowym wyborem elementu głównego są mniejsze od tych powstałych przy rozwiązywaniu układu równań metodą bez wyboru elementu głównego o co najmniej rząd wielkości.
+\noindent Dla wspomnianych wcześniej metod zbadano również błędy, kiedy wektor prawych stron był wyliczany, przedstawia je \Cref{table:2}. Widać tutaj, że błędy wynikające ze stosowania metody eliminacji Gaussa z częściowym wyborem elementu głównego są mniejsze od tych powstałych przy rozwiązywaniu układu równań metodą bez wyboru elementu głównego o co najmniej rząd wielkości. Taka prawidłowość zachodzi również przy rozwiązywaniu układu równań za pomocą rozkładu $\mL\mU$ dlatego przedstawienie danych zostanie tutaj pominięte.
 
 \begin{table}[!h]
         \centering
@@ -520,7 +520,15 @@ $n$ & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć
 \end{tabular}
 \caption{Zestawienie czasu wykonywania i zużytej pamięci dla rozkładów $\mL\mU$ w wariancie bez wyboru elementu głównego i z jego częściowym wyborem}
 \label{table:3}
-\end{table}	
+\end{table}
+
+\noindent W celu potwierdzenia, że złożoność zmodyfikowanych metod jest rzeczywiście liniowa policzono liczbę operacji dla każdej z nich dla coraz większych macierzy, wyniki prezentuje \Cref{fig:wykres}.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{wykres.png}
+\caption{Liczba operacji wykonywanych w czasie rozwiązywania układu równań poszczególnymi metodami}
+\label{fig:wykres}
+\end{figure} 	
 
 \subsection{Wnioski}
 
