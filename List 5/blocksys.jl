@@ -73,7 +73,7 @@ end
 # in:	A - zadana macierz, n - rozmiar macierzy
 # out:	b - obliczony wektor prawych stron
 function right_side_vector(A::SparseMatrixCSC{Float64, Int64}, n::Int64, l::Int64)
-	b = Array{Float64}(n)
+	b = zeros(Float64, n)
 	for i in 1 : n
 		from_col = convert(Int64, max(l * floor((i-1) / l) - 1, 1))
 		last_col = convert(Int64, min(l + l * floor((i-1) / l), n))
@@ -134,7 +134,7 @@ function gaussian_elimination_with_pivots(A::SparseMatrixCSC{Float64, Int64}, n:
 
 	for k in 1:n - 1
 		last_row = convert(Int64, min(l + l * floor((k+1) / l), n))
-		last_col = convert(Int64, min(2*l + l*floor((k+1)/l), n))
+		last_col = convert(Int64, min(2*l + l * floor((k+1) / l), n))
 		for i in k + 1 : last_row
 			max_row = k
 			max = abs(A[k,p[k]])
