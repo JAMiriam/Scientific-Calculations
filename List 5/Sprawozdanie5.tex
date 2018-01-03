@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{bm}
 \usepackage{empheq}
+\renewcommand{\arraystretch}{1,25}
 
 \university{Politechnika Wrocławska}
 \major{Informatyka, inż. I st.}
@@ -125,7 +126,7 @@ Zasadą działania \emph{metody eliminacji Gaussa} przy rozwiązywaniu układów
 \noindent Ostatnim krokiem jest rozwiązanie powstałego układu z macierzą trójkątną górna za pomocą \emph{algorytmu podstawiania wstecz}. Polega on na obliczeniu:
 
 \begin{equation*}
-x_i = \frac{b_i - \sum_{j = i+1}^n}{a_{ii}}
+x_i = \frac{b_i - \sum_{j = i+1}^n a_{ij}}{a_{ii}}
 \end{equation*}
 dla wierszy $i$ od $n$ do $1$.  \\
 
@@ -336,16 +337,16 @@ co dzięki postaci macierzy $\mL$ i $\mU$ (macierze trójkątne) można wykonać
 
 \subsubsection{Zastosowane modyfikacje}
 
-Rozkład $\bm{LU}$ dla macierzy $\mA$ w postaci \ref{eq:postac} jest wyznaczany w sposób bardzo podobny do metody eliminacji Gaussa. Jednak zamiast zerowania elementów $a_{ik}$ podstawiane są mnożniki $z = {a_{ik}}/ {a_{kk}}$, które stanowią elementy macierzy $\mL$. \\
+Rozkład $\bm{LU}$ dla macierzy $\mA$ w postaci (\ref{eq:postac}) jest wyznaczany w sposób bardzo podobny do metody eliminacji Gaussa (bez wyboru elementu głównego bądź z częściowym jego wyborem). Jednak zamiast zerowania elementów $a_{ik}$ podstawiane są mnożniki $z = {a_{ik}}/ {a_{kk}}$, które stanowią elementy macierzy $\mL$. \\
 
 \noindent Złożoność obliczeniowa wyznaczenia takiego rozkładu jest w oczywisty sposób taka sama, co złożoność dla metody eliminacji Gaussa bez wyboru elementu głównego (\Cref{alg:gauss}) czy z częściowym jego wyborem (\Cref{alg:pivotgauss}), a więc, przy założeniu, że $\ell$ jest stałą, wynosi $O(n)$. \\
 
-\noindent W celu rozwiązania układu równań liniowych $\mA\vx = \vb$, gdzie $\mA = \mL\mU$ czyli $\mL\mU\vx = \vb$ należy podzielić obliczenia na dwa etapy \ref{eq:etapy}. Drugi etap obliczeń czyli rozwiązanie układu $\mU \vx = \bm{z}$ nie różni się w zasadzie niczym od algorytmu podstawiania wstecz, nie ulega także zmianie wartość $k_{last}$, która wskazuje na to do której kolumny w danym wierszy należy sumować. Aby rozwiązać układ $\mL \bm{z} = \vb$ należy zastosować algorytm podstawiania w przód, który jest podobny do algorytmu podstawiania wstecz, jednak zaczyna się od pierwszego wiersza i sumowane są elementy z kolumn coraz dalszych, a nie coraz wcześniejszych. Algorytm obliczania $\mL \bm{z} = \vb$ został oczywiście odpowiednio zoptymalizowany ze względu na specyficzną postać macierzy. Warto zauważyć że elementy zerowe w macierzy $\mL$ są na tych samych indeksach co te w macierzy $\mA$. Niepotrzebne jest więc rozpoczynanie sumowania od pierwszej kolumny dla każdego wiersza. W zasadzie takie sumowanie ma miejsce tylko dla $\ell$ pierwszych wierszy. Dla kolejnych $\ell$ wystarczy sumować od kolumny $\ell-1$, a dla jeszcze dalszych $\ell$ kolumny $2\ell-1$, itd. Tę zależność można przedstawić za pomocą następującego ogólnego wzoru:
+\noindent W celu rozwiązania układu równań liniowych $\mA\vx = \vb$, gdzie $\mA = \mL\mU$ czyli $\mL\mU\vx = \vb$ należy podzielić obliczenia na dwa etapy (\ref{eq:etapy}). Drugi etap obliczeń czyli rozwiązanie układu $\mU \vx = \bm{z}$ nie różni się w zasadzie niczym od algorytmu podstawiania wstecz, nie ulega także zmianie wartość $k_{last}$, która wskazuje na to do której kolumny w danym wierszy należy sumować. Aby rozwiązać układ $\mL \bm{z} = \vb$ należy zastosować algorytm podstawiania w przód, który jest podobny do algorytmu podstawiania wstecz, jednak zaczyna się od pierwszego wiersza i sumowane są elementy z kolumn coraz dalszych, a nie coraz wcześniejszych. Algorytm obliczania $\mL \bm{z} = \vb$ został oczywiście odpowiednio zoptymalizowany ze względu na specyficzną postać macierzy. Warto zauważyć że elementy zerowe w macierzy $\mL$ są na tych samych indeksach co te w macierzy $\mA$. Niepotrzebne jest więc rozpoczynanie sumowania od pierwszej kolumny dla każdego wiersza. W zasadzie takie sumowanie ma miejsce tylko dla $\ell$ pierwszych wierszy. Dla kolejnych $\ell$ wystarczy sumować od kolumny $\ell-1$, a dla jeszcze dalszych $\ell$ kolumny $2\ell-1$, itd. Tę zależność można przedstawić za pomocą następującego ogólnego wzoru:
 \begin{equation}
 k_{from}(r) = \max\left\lbrace\ell \cdot \left \lfloor\frac{r - 1}{\ell}\right \rfloor - 1, 1 \right\rbrace.
 \end{equation}
 
-\noindent Metodę rozwiązania układu równań liniowych za pomocą rozkładu $\mL\mU$ macierzy $\mA$ prezentuje \Cref{alg:LU-sol}. \\ 
+\noindent Metodę rozwiązania układu równań liniowych za pomocą rozkładu $\mL\mU$ macierzy $\mA$ prezentuje \Cref{alg:LU-sol}. Metoda wykorzystująca rozkład $\mL\mU$ za pomocą eliminacji Gaussa z częściowym wyborem elementu głównego jest niemalże identyczny z tą tylko różnicą że zamiast odwołania się do konkretnego wiersza następuje odwołanie do jego pozycji w wektorze permutacji.\\ 
 
 \noindent Złożoność obliczeniowa rozwiązywania układu równań liniowych z rozkładu $\mL\mU$ wynosi $O(n)$, ponieważ rozwiązanie $\mU \vx = \bm{z}$ ma taką samą złożoność jak w metodzie Gaussa, a  rozwiązanie $\mL \bm{z} = \vb$ w oczywisty sposób ma także zbliżoną do tej złożoność.
 
@@ -409,9 +410,120 @@ k_{from}(r) = \max\left\lbrace\ell \cdot \left \lfloor\frac{r - 1}{\ell}\right \
 \end{algorithm} 
 
 \subsection{Wyniki}
+Zestawienie czasu rozwiązywania układów równań oraz zużytej pamięci, dla coraz większych macierzy $\mA$ standardową metodą eliminacji Gaussa jak również dwoma modyfikacjami -- bez wyboru elementu głównego i jego częściowym wyborem przedstawia \Cref{table:1}, dla metody bez modyfikacji obliczenia przerwano po rozwiązaniu układu z $6000$ niewiadomych, ponieważ zbyt duże zużycie pamięci uniemożliwiało dalszą pracę komputera.
+
+\begin{table}[!h]
+        \centering
+        \footnotesize
+\begin{tabular}{c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c}
+& \multicolumn{2}{c|}{$\vx = \mA \backslash \vb$} & \multicolumn{2}{c|}{bez wyboru} & \multicolumn{2}{c}{z wyborem} \\ \hline
+$n$ & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} \\ \hline
+16 & 0.001094 & 2.625 KiB & 0.000048 & 3.391 KiB & 0.000084 & 3.625 KiB \\
+100 & 0.027763 & 80.047 KiB & 0.000179 & 22.500 KiB & 0.000407 & 23.406 KiB \\
+2000 & 0.343397 & 30.549 MiB & 0.014192 & 453.000 KiB & 0.014862 & 468.781 KiB \\
+6000 & 6.731499 & 274.750 MiB & 0.128058 & 1.327 MiB & 0.130757 & 1.373 MiB \\
+10000 & {---} & --- & 0.381457 & 2.212 MiB & 0.384041 & 2.289 MiB \\
+50000 & {---} & --- & 17.542994 & 5.722 MiB & 20.042335 & 6.104 MiB \\
+\end{tabular}
+\caption{Zestawienie czasu wykonywania i zużytej pamięci dla metody eliminacji Gaussa bez modyfikacji i metod z modyfikacjami w wariancie bez wyboru elementu głównego i z jego częściowym wyborem}
+\label{table:1}
+\end{table}	
+
+\noindent Dla wspomnianych wcześniej metod zbadano również błędy, kiedy wektor prawych stron był wyliczany, przedstawia je \Cref{table:2}. Widać tutaj, że błędy wynikające ze stosowania metody eliminacji Gaussa z częściowym wyborem elementu głównego są mniejsze od tych powstałych przy rozwiązywaniu układu równań metodą bez wyboru elementu głównego o co najmniej rząd wielkości.
+
+\begin{table}[!h]
+        \centering
+        \footnotesize
+\begin{tabular}{c|
+		S[
+        table-number-alignment = right,
+		table-figures-integer  = 1,
+		table-figures-decimal = 16,
+		table-figures-exponent = 3
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 1,
+		table-figures-decimal = 16,
+		table-figures-exponent = 3
+		]
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 1,
+		table-figures-decimal = 16,
+		table-figures-exponent = 3
+		]
+		}
+$n$ & {$\vx = \mA \backslash \vb$} & {bez wyboru} & {z wyborem} \\ \hline
+16 & 1.942890293094024e-16 & 3.107895799689565e-14 & 3.433175098891678e-16 \\
+100 & 2.8522145930998397e-16 & 2.949121011348651e-15 & 2.6107951392584033e-16 \\
+2000 & 2.7128998740608095e-16 & 2.9256114662419202e-15 & 3.0136983042333716e-16 \\
+6000 & 2.9024777490400715e-16 & 1.96505177640419e-14 & 3.000171026473022e-16 \\
+10000 & {---} & 4.459026580959929e-14 & 2.98232852765259e-16 \\
+50000 & {---} & 4.503491569922606e-14 & 3.005195520712902e-16 \\
+\end{tabular}
+\caption{Zestawienie błędów względnych dla metody eliminacji Gaussa bez modyfikacji i metod z modyfikacjami w wariancie bez wyboru elementu głównego i z jego częściowym wyborem}
+\label{table:2}
+\end{table}	
+
+\noindent Podobnie jak dla metody eliminacji Gaussa czas rozwiązywania układu oraz zużytą pamięć zbadano dla rozwiązywania z układem $\mL\mU$, z tym że osobno policzono czas i zużytą pamięć samego rozkładu, a następnie rozwiązania z użyciem tego rozkładu. W ten sposób można zaobserwować, że samo rozwiązanie z posiadanego rozkładu $\mL\mU$ jest ułamkiem nakładu czasu i pamięci potrzebnej do stworzenia rozkładu. Wyniki prezentuje \Cref{table:3}
+
+\begin{table}[!h]
+        \centering
+        \footnotesize
+\begin{tabular}{c
+		|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c|S[
+        table-number-alignment = right,
+		table-figures-integer  = 2,
+		table-figures-decimal = 6
+		]
+		|c}
+& \multicolumn{2}{c|}{rozkład bez wyboru} & \multicolumn{2}{c|}{rozwiązanie bez wyboru} & \multicolumn{2}{c|}{rozkład z wyborem} & \multicolumn{2}{c}{rozwiązanie z wyborem} \\ \hline
+$n$ & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} & {Czas [s]} & {Pamięć} \\ \hline
+16 & 0.000035 & 3.188 KiB & 0.000006 & 416 b & 0.000073 & 3.422 KiB & 0.000012 & 416 b \\
+100 & 0.000162 & 21.625 KiB & 0.000028 & 1.750 KiB & 0.000339 & 22.531 KiB & 0.000043 & 1.750 KiB \\
+2000 & 0.011805 & 437.250 KiB & 0.000502 & 31.500 KiB & 0.014052 & 453.031 KiB & 0.000609 & 31.500 KiB \\
+6000 & 0.118416 & 1.281 MiB & 0.001244 & 93.906 KiB & 0.129308 & 1.327 MiB & 0.002653 & 93.906 KiB \\
+10000 & 0.376795 & 2.136 MiB & 0.002829 & 156.406 KiB & 0.381735 & 2.212 MiB & 0.003327 &  156.406 KiB \\
+50000 & 17.361661 & 6.121 MiB & 0.055568 & 1.138 MiB & 18.941635 & 6.399 MiB & 0.074308 & 1.216 MiB \\
+\end{tabular}
+\caption{Zestawienie czasu wykonywania i zużytej pamięci dla rozkładów $\mL\mU$ w wariancie bez wyboru elementu głównego i z jego częściowym wyborem}
+\label{table:3}
+\end{table}	
 
 \subsection{Wnioski}
 
-Przedstawione wyniki pokazują, że rzeczywiście złożoność obliczeniowa zaimplementowanych metod jest liniowa. Widać także, że wolniejsza metoda eliminacji z częściowym wyborem elementu głównego zarówno w metodzie eliminacji Gaussa jak i w rozkładzie LU daje dokładniejsze wyniki, kiedy nieznacznie zostanie zaburzony wektor prawych stron. Warto pamiętać, że czasem jej użycie jest konieczne do rozwiązania układu (elementy zerowe na diagonali). Rozwiązywanie pojedynczych układów równań liniowych za pomocą rozkładu LU jest sumarycznie gorsze od zastosowania metody eliminacji Gaussa, jednak kiedy dla jednej macierzy pojawia się więcej różnych wektorów prawych stron ta metoda staje się bardzo opłacalna, ponieważ sam rozkład macierzy jest liczony tylko raz, a rozwiązanie układu z dwóch macierzy trójkątnych jest szybsze i łatwiejsze niż przeprowadzenie eliminacji Gaussa od początku. Przeprowadzone eksperymenty pokazują również, że optymalizacja pod kątem specyficznej budowy macierzy A daje konkretne rezultaty. Dzięki wprowadzonym modyfikacjom złożoność zarówno obliczeniowa jak i pamięciowa są na tyle małe że pozwalają na rozwiązywanie układów równań z bardzo dużą liczbą niewiadomych, co przy wykorzystaniu standardowych metod byłoby niemożliwe. Widać zatem jak wiele można zyskać optymalizując różne algorytmy pod konkretne przypadki użycia.
+Przedstawione wyniki pokazują, że rzeczywiście złożoność obliczeniowa zaimplementowanych metod jest liniowa. Widać także, że wolniejsza i zużywająca większą ilość pamięci metoda eliminacji z częściowym wyborem elementu głównego zarówno w metodzie eliminacji Gaussa jak i w rozkładzie $\mL\mU$ daje dokładniejsze wyniki, kiedy nieznacznie zostanie zaburzony wektor prawych stron. Warto pamiętać, że czasem jej użycie jest konieczne do rozwiązania układu (elementy zerowe na diagonali). Rozwiązywanie pojedynczych układów równań liniowych za pomocą rozkładu $\mL\mU$ jest sumarycznie gorsze od zastosowania metody eliminacji Gaussa, jednak kiedy dla jednej macierzy pojawia się więcej różnych wektorów prawych stron ta metoda staje się bardzo opłacalna, ponieważ sam rozkład macierzy jest liczony tylko raz, a rozwiązanie układu z dwóch macierzy trójkątnych jest szybsze i łatwiejsze niż przeprowadzenie eliminacji Gaussa od początku. Przeprowadzone eksperymenty pokazują również, że optymalizacja pod kątem specyficznej budowy macierzy $\mA$ daje konkretne rezultaty. Dzięki wprowadzonym modyfikacjom złożoność zarówno obliczeniowa jak i pamięciowa są na tyle małe że pozwalają na rozwiązywanie układów równań z bardzo dużą liczbą niewiadomych, co przy wykorzystaniu standardowych metod byłoby niemożliwe. Widać zatem jak wiele można zyskać optymalizując różne algorytmy pod konkretne przypadki użycia.
 
 \end{document}
